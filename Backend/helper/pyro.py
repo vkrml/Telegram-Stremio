@@ -14,10 +14,12 @@ from pyrogram import enums
 
 
 def is_media(message):
+    """Checks if the message contains any supported media type."""
     return next((getattr(message, attr) for attr in ["document", "photo", "video", "audio", "voice", "video_note", "sticker", "animation"] if getattr(message, attr)), None)
 
 
 async def get_file_ids(client: Client, chat_id: int, message_id: int) -> Optional[FileId]:
+    """Retrieves and decodes file properties for streaming."""
     try:
         message = await client.get_messages(chat_id, message_id)
         if message.empty:
@@ -40,8 +42,8 @@ async def get_file_ids(client: Client, chat_id: int, message_id: int) -> Optiona
         raise
         
 
-
 def get_readable_file_size(size_in_bytes):
+    """Converts bytes to human-readable format (MB/GB)."""
     size_in_bytes = int(size_in_bytes) if str(size_in_bytes).isdigit() else 0
     if not size_in_bytes:
         return '0B'
@@ -55,6 +57,7 @@ def get_readable_file_size(size_in_bytes):
 
 
 def clean_filename(filename):
+    """Cleans annoying tags and group names from filenames for better metadata matching."""
     if not filename:
         return "unknown_file"
     
@@ -72,6 +75,7 @@ def clean_filename(filename):
 
 
 def get_readable_time(seconds: int) -> str:
+    """Converts seconds into a readable uptime string."""
     count = 0
     readable_time = ""
     time_list = []
@@ -102,8 +106,8 @@ def get_readable_time(seconds: int) -> str:
     return readable_time
 
 
-
 def remove_urls(text):
+    """Removes http/https links from captions."""
     if not text:
         return ""
     
@@ -114,8 +118,8 @@ def remove_urls(text):
     return cleaned_text
 
 
-
 async def restart_notification():
+    """Handles the notification sent to the owner after a successful reboot."""
     chat_id, msg_id = 0, 0
     try:
         if await aiopath.exists(".restartmsg"):
@@ -125,12 +129,22 @@ async def restart_notification():
             
             try:
                 repo = Telegram.UPSTREAM_REPO.split('/')
-                UPSTREAM_REPO = f"https://github.com/{repo[-2]}/{repo[-1]}"
+                repo_url = f"https://github.com/{repo[-2]}/{repo[-1]}"
+                website_url = Telegram.BASE_URL
+                
                 await StreamBot.edit_message_text(
                     chat_id=chat_id,
                     message_id=msg_id,
-                    text=f"... ♻️ Restart Successfully...! \n\nDate: {now.strftime('%d/%m/%y')}\nTime: {now.strftime('%I:%M:%S %p')}\nTimeZone: {timezone.zone}\n\nRepo: {UPSTREAM_REPO}\nBranch: {Telegram.UPSTREAM_BRANCH}\nVersion: {__version__}",
-                    parse_mode=enums.ParseMode.HTML
+                    text=(
+                        f"🎉 <b>Server Restarted Successfully!</b>\n\n"
+                        f"📅 <b>Date:</b> <code>{now.strftime('%d/%m/%y')}</code>\n"
+                        f"⏰ <b>Time:</b> <code>{now.strftime('%I:%M:%S %p')}</code>\n"
+                        f"🌐 <b>Website:</b> {website_url}\n\n"
+                        f"🛠 <b>Version:</b> <code>{__version__}</code>\n"
+                        f"🌿 <b>Branch:</b> <code>{Telegram.UPSTREAM_BRANCH}</code>"
+                    ),
+                    parse_mode=enums.ParseMode.HTML,
+                    disable_web_page_preview=True
                 )
             except Exception as e:
                 LOGGER.error(f"Failed to edit restart message: {e}")
@@ -141,17 +155,18 @@ async def restart_notification():
         LOGGER.error(f"Error in restart_notification: {e}")
 
 
-# Bot commands
+# Updated Bot commands for the Web VOD Portal
 commands = [
-    BotCommand("start", "🚀 Start the bot"),
-    BotCommand("set", "🎬 Manually add IMDb metadata"),
-    BotCommand("fixmetadata", "⚙️ Fix empty fields of Metadata"),
-    BotCommand("log", "📄 Send the log file"),
-    BotCommand("restart", "♻️ Restart the bot"),
+    BotCommand("start", "🚀 Get Website Link"),
+    BotCommand("set", "🎬 Manually link IMDB/TMDB URL"),
+    BotCommand("fixmetadata", "⚙️ Update/Fix missing metadata"),
+    BotCommand("log", "📄 Get server log file"),
+    BotCommand("restart", "♻️ Restart the server"),
 ]
 
 
 async def setup_bot_commands(bot: Client):
+    """Sets the menu commands for the Telegram bot."""
     try:
         current_commands = await bot.get_bot_commands()
         if current_commands:
@@ -162,4 +177,3 @@ async def setup_bot_commands(bot: Client):
         LOGGER.info("Bot commands updated successfully.")
     except Exception as e:
         LOGGER.error(f"Error setting up bot commands: {e}")
-
