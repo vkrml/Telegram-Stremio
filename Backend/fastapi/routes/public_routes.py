@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Request, Query, HTTPException
+from fastapi.responses import HTMLResponse  # <--- This import was missing
 from fastapi.templating import Jinja2Templates
 from Backend import db
 from Backend.config import Telegram
