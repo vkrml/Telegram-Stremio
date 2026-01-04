@@ -4,7 +4,7 @@ import logging
 from traceback import format_exc
 from pyrogram import idle
 from Backend import __version__, db
-from Backend.helper.pinger import ping
+# REMOVED: from Backend.helper.pinger import ping
 from Backend.logger import LOGGER
 from Backend.fastapi import server
 from Backend.helper.pyro import restart_notification, setup_bot_commands
@@ -15,7 +15,7 @@ loop = get_event_loop()
 
 async def start_services():
     try:
-        LOGGER.info(f"Initializing Telegram-Stremio v-{__version__}")
+        LOGGER.info(f"Initializing Telegram Web Portal v-{__version__}")
         await asleep(1.2)
         
         await db.connect()
@@ -38,12 +38,15 @@ async def start_services():
         await setup_bot_commands(StreamBot)
         await asleep(2)
 
-        LOGGER.info('Initializing Telegram-Stremio Web Server...')
+        LOGGER.info('Initializing Telegram Web Server...')
         await restart_notification()
-        loop.create_task(server.serve())
-        loop.create_task(ping())
         
-        LOGGER.info("Telegram-Stremio Started Successfully!")
+        # Start the FastAPI Web Server
+        loop.create_task(server.serve())
+        
+        # REMOVED: loop.create_task(ping())
+        
+        LOGGER.info("Portal Started Successfully! Access your Netflix UI at BASE_URL.")
         await idle()
     except Exception:
         LOGGER.error("Error during startup:\n" + format_exc())
@@ -77,4 +80,4 @@ if __name__ == '__main__':
     finally:
         loop.run_until_complete(stop_services())
         loop.stop()
-        logging.shutdown()  
+        logging.shutdown()
