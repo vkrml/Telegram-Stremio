@@ -1,26 +1,94 @@
 {% extends "base.html" %}
+
+{% block title %}Admin Console - Links4U{% endblock %}
+
 {% block content %}
-<div class="pt-32 px-8 md:px-16 min-h-screen">
-    <h1 class="text-4xl font-black mb-10">Admin Dashboard</h1>
-    
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <div class="bg-zinc-900 p-6 rounded-lg border border-white/5">
-            <p class="text-gray-500 text-sm">System Uptime</p>
-            <p class="text-2xl font-bold">{{ system_stats.uptime }}</p>
+<div class="p-6 md:p-12">
+    <div class="flex items-end justify-between mb-12">
+        <div>
+            <h1 class="text-3xl font-bold text-white mb-2">Command Center</h1>
+            <p class="text-white/40 text-sm">System Overview & Diagnostics</p>
         </div>
-        <div class="bg-zinc-900 p-6 rounded-lg border border-white/5">
-            <p class="text-gray-500 text-sm">Total Movies</p>
-            <p class="text-2xl font-bold text-red-600">{{ system_stats.movies }}</p>
-        </div>
-        <div class="bg-zinc-900 p-6 rounded-lg border border-white/5">
-            <p class="text-gray-500 text-sm">Total TV Shows</p>
-            <p class="text-2xl font-bold text-blue-600">{{ system_stats.tv_shows }}</p>
+        <div class="flex items-center gap-4">
+            <span class="px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-xs font-bold border border-green-500/20 animate-pulse">
+                SYSTEM ONLINE
+            </span>
+            <a href="/logout" class="text-xs text-red-400 hover:text-red-300 font-bold uppercase tracking-wider">Log Out</a>
         </div>
     </div>
 
-    <div class="flex gap-4">
-        <a href="/media/manage?media_type=movie" class="bg-white text-black px-6 py-3 rounded font-bold">Manage Movies</a>
-        <a href="/media/manage?media_type=tv" class="bg-zinc-800 text-white px-6 py-3 rounded font-bold">Manage Series</a>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+        <div class="bg-surface-light p-6 rounded-2xl border border-white/5">
+            <p class="text-white/30 text-[10px] font-bold uppercase tracking-widest mb-2">Total Movies</p>
+            <p class="text-3xl font-bold text-white">{{ system_stats.movies }}</p>
+        </div>
+        <div class="bg-surface-light p-6 rounded-2xl border border-white/5">
+            <p class="text-white/30 text-[10px] font-bold uppercase tracking-widest mb-2">Total TV Series</p>
+            <p class="text-3xl font-bold text-white">{{ system_stats.tv_shows }}</p>
+        </div>
+        <div class="bg-surface-light p-6 rounded-2xl border border-white/5">
+            <p class="text-white/30 text-[10px] font-bold uppercase tracking-widest mb-2">Active Bots</p>
+            <p class="text-3xl font-bold text-white">{{ system_stats.connected_bots }}</p>
+        </div>
+        <div class="bg-surface-light p-6 rounded-2xl border border-white/5">
+            <p class="text-white/30 text-[10px] font-bold uppercase tracking-widest mb-2">System Uptime</p>
+            <p class="text-xl font-bold text-white font-mono">{{ system_stats.uptime }}</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <div class="bg-surface-light p-8 rounded-2xl border border-white/5">
+            <h3 class="text-lg font-bold text-white mb-6">Storage Nodes</h3>
+            <div class="space-y-4">
+                {% for db in system_stats.databases %}
+                <div class="flex items-center justify-between p-4 bg-background rounded-xl border border-white/5">
+                    <div class="flex items-center gap-4">
+                        <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                        <div>
+                            <p class="text-sm font-bold text-white">{{ db.db_name }}</p>
+                            <p class="text-xs text-white/40">Used: {{ "%.1f"|format(db.storageSize / 1024 / 1024) }} MB</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xs text-white/60 font-mono">{{ "{:,}".format(db.movie_count) }} Movies</p>
+                        <p class="text-xs text-white/60 font-mono">{{ "{:,}".format(db.tv_count) }} Shows</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="bg-surface-light p-8 rounded-2xl border border-white/5">
+            <h3 class="text-lg font-bold text-white mb-6">Management</h3>
+            <div class="grid grid-cols-1 gap-4">
+                <a href="/admin/media/manage?media_type=movie" class="group flex items-center justify-between p-4 bg-background rounded-xl border border-white/5 hover:border-white/20 transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">
+                            <i class="fa-solid fa-film"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">Manage Movies</p>
+                            <p class="text-xs text-white/40">Edit metadata, delete content</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-white/20 group-hover:text-white transition-colors"></i>
+                </a>
+
+                <a href="/admin/media/manage?media_type=tv" class="group flex items-center justify-between p-4 bg-background rounded-xl border border-white/5 hover:border-white/20 transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400">
+                            <i class="fa-solid fa-tv"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-white group-hover:text-purple-400 transition-colors">Manage TV Series</p>
+                            <p class="text-xs text-white/40">Edit seasons, episodes, files</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-white/20 group-hover:text-white transition-colors"></i>
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
