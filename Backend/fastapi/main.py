@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Form, Depends, Query
+from fastapi import FastAPI, Request, Form, Depends, Query, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -7,10 +7,12 @@ from Backend import __version__
 from Backend.fastapi.security.credentials import require_auth
 from Backend.fastapi.routes.stream_routes import router as stream_router
 from Backend.fastapi.routes.public_routes import router as public_router
+# Import Admin Template Routes
 from Backend.fastapi.routes.template_routes import (
     login_page, login_post, logout, set_theme, dashboard_page,
     media_management_page, edit_media_page, public_status_page
 )
+# Import API Routes
 from Backend.fastapi.routes.api_routes import (
     list_media_api, delete_media_api, update_media_api,
     delete_movie_quality_api, delete_tv_quality_api,
@@ -18,13 +20,13 @@ from Backend.fastapi.routes.api_routes import (
 )
 
 app = FastAPI(
-    title="Telegram Web VOD",
-    description="Netflix-style Media Portal powered by Telegram Multi-Token bots",
+    title="Links4U Archive",
+    description="High-end Digital Media Library",
     version=__version__
 )
 
 # --- Middleware Setup ---
-app.add_middleware(SessionMiddleware, secret_key="NETFLIX_STYLE_SECRET_KEY")
+app.add_middleware(SessionMiddleware, secret_key="f6d2e3b9a0f43d9a2e6a56b2d3175cd9c05bbfe31d95ed2a7306b57cb1a8b6f0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -35,14 +37,14 @@ app.add_middleware(
 
 try:
     app.mount("/static", StaticFiles(directory="Backend/fastapi/static"), name="static")
-except:
+except Exception:
     pass
 
-# --- ROUTER INTEGRATION ---
-app.include_router(public_router) # The Public Netflix UI
-app.include_router(stream_router) # The Multi-Token Engine
+# --- Routers ---
+app.include_router(stream_router)
+app.include_router(public_router) # Handles /, /search, /view
 
-# --- AUTH ROUTES ---
+# --- Authentication Routes ---
 @app.get("/login", response_class=HTMLResponse)
 async def login_get(request: Request):
     return await login_page(request)
@@ -55,18 +57,76 @@ async def login_post_route(request: Request, username: str = Form(...), password
 async def logout_route(request: Request):
     return await logout(request)
 
-# --- PROTECTED ADMIN ROUTES ---
+@app.post("/set-theme")
+async def set_theme_route(request: Request, theme: str = Form(...)):
+    return await set_theme(request, theme)
+
+# --- Admin Dashboard Routes (Protected) ---
 @app.get("/admin", response_class=HTMLResponse)
-async def root(request: Request, _: bool = Depends(require_auth)):
+async def root_admin(request: Request, _: bool = Depends(require_auth)):
     return await dashboard_page(request, _)
 
-@app.get("/media/manage", response_class=HTMLResponse)
+@app.get("/admin/media/manage", response_class=HTMLResponse)
 async def media_management(request: Request, media_type: str = "movie", _: bool = Depends(require_auth)):
     return await media_management_page(request, media_type, _)
 
-@app.get("/media/edit", response_class=HTMLResponse)
+@app.get("/admin/media/edit", response_class=HTMLResponse)
 async def edit_media(request: Request, tmdb_id: int, db_index: int, media_type: str, _: bool = Depends(require_auth)):
     return await edit_media_page(request, tmdb_id, db_index, media_type, _)
+
+@app.get("/admin/status", response_class=HTMLResponse)
+async def admin_status(request: Request, _: bool = Depends(require_auth)):
+    return await public_status_page(request)
+
+# --- Internal APIs (Protected) ---
+@app.get("/api/media/list")
+async def list_media(
+    media_type: str = Query("movie", regex="^(movie|tv)$"),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(24, ge=1, le=100),
+    search: str = Query("", max_length=100),
+    _: bool = Depends(require_auth)
+):
+    return await list_media_api(media_type, page, page_size, search)
+
+@app.delete("/api/media/delete")
+async def delete_media(tmdb_id: int, db_index: int, media_type: str, _: bool = Depends(require_auth)):
+    return await delete_media_api(tmdb_id, db_index, media_type)
+
+@app.put("/api/media/update")
+async def update_media(request: Request, tmdb_id: int, db_index: int, media_type: str, _: bool = Depends(require_auth)):
+    return await update_media_api(request, tmdb_id, db_index, media_type)
+
+@app.delete("/api/media/delete-quality")
+async def delete_movie_quality(tmdb_id: int, db_index: int, id: str, _: bool = Depends(require_auth)):
+    return await delete_movie_quality_api(tmdb_id, db_index, id)
+
+@app.delete("/api/media/delete-tv-quality")
+async def delete_tv_quality(tmdb_id: int, db_index: int, season: int, episode: int, id: str, _: bool = Depends(require_auth)):
+    return await delete_tv_quality_api(tmdb_id, db_index, season, episode, id)
+
+@app.delete("/api/media/delete-tv-episode")
+async def delete_tv_episode(tmdb_id: int, db_index: int, season: int, episode: int, _: bool = Depends(require_auth)):
+    return await delete_tv_episode_api(tmdb_id, db_index, season, episode)
+
+@app.delete("/api/media/delete-tv-season")
+async def delete_tv_season(tmdb_id: int, db_index: int, season: int, _: bool = Depends(require_auth)):
+    return await delete_tv_season_api(tmdb_id, db_index, season)
+
+@app.get("/api/system/workloads")
+async def get_workloads(_: bool = Depends(require_auth)):
+    try:
+        from Backend.pyrofork.bot import work_loads
+        return {
+            "loads": {
+                f"bot{c + 1}": l
+                for c, (_, l) in enumerate(
+                    sorted(work_loads.items(), key=lambda x: x[1], reverse=True)
+                )
+            } if work_loads else {}
+        }
+    except Exception as e:
+        return {"loads": {}}
 
 @app.exception_handler(401)
 async def auth_exception_handler(request: Request, exc):
