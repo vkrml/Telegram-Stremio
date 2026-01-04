@@ -1,70 +1,48 @@
 {% extends "base.html" %}
 
-{% block title %}System Status - Telegram Stremio{% endblock %}
+{% block title %}System Status - Links4U{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Header -->
-    <div class="mb-8 text-center">
-        <h1 class="text-3xl font-bold">System Status</h1>
-        <p class="theme-text-secondary mt-2">Current status of Telegram Stremio services</p>
-    </div>
-    
-    <!-- Status Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="theme-card p-6 rounded-lg shadow text-center">
-            <div class="w-16 h-16 mx-auto mb-4 theme-primary rounded-full flex items-center justify-center">
-                <span class="text-white text-2xl">✓</span>
-            </div>
-            <h3 class="text-lg font-semibold mb-2">Backend Status</h3>
-            <p class="text-green-600 font-medium">{{ stats.status|title }}</p>
-        </div>
+<div class="min-h-screen flex items-center justify-center p-6">
+    <div class="w-full max-w-2xl bg-surface-light border border-white/5 rounded-3xl p-8 md:p-12 shadow-2xl">
         
-        <div class="theme-card p-6 rounded-lg shadow text-center">
-            <div class="w-16 h-16 mx-auto mb-4 bg-blue-500 rounded-full flex items-center justify-center">
-                <span class="text-white text-2xl">↑</span>
-            </div>
-            <h3 class="text-lg font-semibold mb-2">Uptime</h3>
-            <p class="text-green-600 font-medium">{{ stats.uptime }}</p>
+        <div class="text-center mb-12">
+            <h1 class="text-3xl font-bold text-white mb-2">System Status</h1>
+            <p class="text-white/40">Links4U Archive Operational Metrics</p>
         </div>
-        
-        <div class="theme-card p-6 rounded-lg shadow text-center">
-            <div class="w-16 h-16 mx-auto mb-4 bg-purple-500 rounded-full flex items-center justify-center">
-                <span class="text-white text-2xl">v</span>
+
+        <div class="grid grid-cols-2 gap-8 mb-12">
+            <div class="text-center p-6 bg-background rounded-2xl border border-white/5">
+                <div class="w-3 h-3 bg-green-500 rounded-full mx-auto mb-4 shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+                <p class="text-white font-bold text-lg mb-1">{{ stats.status }}</p>
+                <p class="text-xs text-white/30 uppercase tracking-widest">Global State</p>
             </div>
-            <h3 class="text-lg font-semibold mb-2">Version</h3>
-            <p class="theme-text-secondary font-medium">{{ stats.version }}</p>
+            
+            <div class="text-center p-6 bg-background rounded-2xl border border-white/5">
+                <p class="text-white font-bold text-lg mb-1">{{ stats.total_content }}</p>
+                <p class="text-xs text-white/30 uppercase tracking-widest">Archived Assets</p>
+            </div>
         </div>
-    </div>
-    
-    <!-- Services Status -->
-    <div class="theme-card p-6 rounded-lg shadow mb-8">
-        <h2 class="text-xl font-semibold mb-4">Service Status</h2>
+
         <div class="space-y-4">
-            <div class="flex justify-between items-center">
-                <span>API Endpoints</span>
-                <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm">Active</span>
+            <div class="flex justify-between items-center p-4 border-b border-white/5">
+                <span class="text-white/60 text-sm">Web Interface</span>
+                <span class="text-green-400 text-xs font-bold uppercase">Active</span>
             </div>
-            <div class="flex justify-between items-center">
-                <span>Stremio Addon</span>
-                <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm">Active</span>
+            <div class="flex justify-between items-center p-4 border-b border-white/5">
+                <span class="text-white/60 text-sm">Streaming Nodes</span>
+                <span class="text-green-400 text-xs font-bold uppercase">Active</span>
             </div>
-            <div class="flex justify-between items-center">
-                <span>Database</span>
-                <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm">Connected</span>
+            <div class="flex justify-between items-center p-4 border-b border-white/5">
+                <span class="text-white/60 text-sm">Database Shards</span>
+                <span class="text-white text-xs font-bold">{{ stats.databases_online }} Connected</span>
             </div>
         </div>
+
+        <div class="mt-12 text-center">
+            <a href="/" class="text-white/40 hover:text-white text-xs font-bold uppercase tracking-widest transition-colors">Return Home</a>
+        </div>
+
     </div>
-    
-    {% if not is_authenticated %}
-    <!-- Admin Access -->
-    <div class="theme-card p-6 rounded-lg shadow text-center">
-        <h2 class="text-xl font-semibold mb-4">Administrator Access</h2>
-        <p class="theme-text-secondary mb-4">Login to access the full admin dashboard</p>
-        <a href="/login" class="theme-primary text-white px-6 py-3 rounded-md hover:opacity-90 transition-opacity inline-block">
-            Admin Login
-        </a>
-    </div>
-    {% endif %}
 </div>
 {% endblock %}
