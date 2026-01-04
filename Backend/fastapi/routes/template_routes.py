@@ -9,37 +9,28 @@ from Backend.helper.pyro import get_readable_time
 from Backend import StartTime, __version__
 from time import time
 
-
 templates = Jinja2Templates(directory="Backend/fastapi/templates")
 
 async def login_page(request: Request):
     if is_authenticated(request):
-        return RedirectResponse(url="/", status_code=302)
+        return RedirectResponse(url="/admin", status_code=302)
     
-    theme_name = request.session.get("theme", "purple_gradient")
-    theme = get_theme(theme_name)
-    
+    # Theme logic preserved but defaulted to dark in base.html
     return templates.TemplateResponse("login.html", {
         "request": request,
-        "theme": theme,
-        "themes": get_all_themes(),
-        "current_theme": theme_name
+        "current_theme": "dark_professional" 
     })
 
 async def login_post(request: Request, username: str = Form(...), password: str = Form(...)):
     if verify_credentials(username, password):
         request.session["authenticated"] = True
         request.session["username"] = username
-        return RedirectResponse(url="/", status_code=302)
+        return RedirectResponse(url="/admin", status_code=302)
     else:
-        theme_name = request.session.get("theme", "purple_gradient")
-        theme = get_theme(theme_name)
         return templates.TemplateResponse("login.html", {
             "request": request,
-            "theme": theme,
-            "themes": get_all_themes(),
-            "current_theme": theme_name,
-            "error": "Invalid credentials"
+            "error": "Invalid Access Credentials",
+            "current_theme": "dark_professional"
         })
 
 async def logout(request: Request):
@@ -47,13 +38,12 @@ async def logout(request: Request):
     return RedirectResponse(url="/login", status_code=302)
 
 async def set_theme(request: Request, theme: str = Form(...)):
-    if theme in get_all_themes():
-        request.session["theme"] = theme
+    # Theme switcher is largely deprecated in favor of the single 'Archive' look,
+    # but kept for session compatibility if needed later.
+    request.session["theme"] = theme
     return RedirectResponse(url=request.headers.get("referer", "/"), status_code=302)
 
 async def dashboard_page(request: Request, _: bool = Depends(require_auth)):
-    theme_name = request.session.get("theme", "purple_gradient")
-    theme = get_theme(theme_name)
     current_user = get_current_user(request)
     
     try:
@@ -62,9 +52,9 @@ async def dashboard_page(request: Request, _: bool = Depends(require_auth)):
         total_tv_shows = sum(stat.get("tv_count", 0) for stat in db_stats)
         
         system_stats = {
-            "server_status": "running",
+            "server_status": "Online",
             "uptime": get_readable_time(time() - StartTime),
-            "telegram_bot": f"@{StreamBot.username}" if StreamBot and StreamBot.username else "@StreamBot",
+            "telegram_bot": f"@{StreamBot.username}" if StreamBot and StreamBot.username else "Unknown",
             "connected_bots": len(multi_clients),
             "loads": {
                 f"bot{c + 1}": l
@@ -81,48 +71,24 @@ async def dashboard_page(request: Request, _: bool = Depends(require_auth)):
         }
     except Exception as e:
         print(f"Dashboard error: {e}")
-        system_stats = {
-            "server_status": "error", 
-            "error": str(e),
-            "uptime": "N/A",
-            "telegram_bot": "@StreamBot",
-            "connected_bots": 0,
-            "loads": {},
-            "version": "1.0.0",
-            "movies": 0,
-            "tv_shows": 0,
-            "databases": [],
-            "total_databases": 0,
-            "current_db_index": 1
-        }
+        system_stats = {}
     
     return templates.TemplateResponse("dashboard.html", {
         "request": request,
-        "theme": theme,
-        "themes": get_all_themes(),
-        "current_theme": theme_name,
         "current_user": current_user,
         "system_stats": system_stats
     })
     
 
 async def media_management_page(request: Request, media_type: str = "movie", _: bool = Depends(require_auth)):
-    theme_name = request.session.get("theme", "purple_gradient")
-    theme = get_theme(theme_name)
     current_user = get_current_user(request)
-    
     return templates.TemplateResponse("media_management.html", {
         "request": request,
-        "theme": theme,
-        "themes": get_all_themes(),
-        "current_theme": theme_name,
         "current_user": current_user,
         "media_type": media_type
     })
 
 async def edit_media_page(request: Request, tmdb_id: int, db_index: int, media_type: str, _: bool = Depends(require_auth)):
-    theme_name = request.session.get("theme", "purple_gradient")
-    theme = get_theme(theme_name)
     current_user = get_current_user(request)
     
     try:
@@ -134,9 +100,6 @@ async def edit_media_page(request: Request, tmdb_id: int, db_index: int, media_t
     
     return templates.TemplateResponse("media_edit.html", {
         "request": request,
-        "theme": theme,
-        "themes": get_all_themes(),
-        "current_theme": theme_name,
         "current_user": current_user,
         "tmdb_id": tmdb_id,
         "db_index": db_index,
@@ -145,23 +108,20 @@ async def edit_media_page(request: Request, tmdb_id: int, db_index: int, media_t
     })
 
 async def public_status_page(request: Request):
-    theme_name = request.session.get("theme", "purple_gradient")
-    theme = get_theme(theme_name)
-    
     try:
         db_stats = await db.get_database_stats()
         total_movies = sum(stat.get("movie_count", 0) for stat in db_stats)
         total_tv_shows = sum(stat.get("tv_count", 0) for stat in db_stats)
         
         public_stats = {
-            "status": "operational",
+            "status": "Operational",
             "uptime": "99.9%",
             "total_content": total_movies + total_tv_shows,
             "databases_online": len(db_stats)
         }
     except Exception:
         public_stats = {
-            "status": "maintenance",
+            "status": "Maintenance",
             "uptime": "N/A",
             "total_content": 0,
             "databases_online": 0
@@ -169,21 +129,6 @@ async def public_status_page(request: Request):
     
     return templates.TemplateResponse("public_status.html", {
         "request": request,
-        "theme": theme,
-        "themes": get_all_themes(),
-        "current_theme": theme_name,
         "stats": public_stats,
-        "is_authenticated": is_authenticated(request)
-    })
-
-async def stremio_guide_page(request: Request):
-    theme_name = request.session.get("theme", "purple_gradient")
-    theme = get_theme(theme_name)
-    
-    return templates.TemplateResponse("stremio_guide.html", {
-        "request": request,
-        "theme": theme,
-        "themes": get_all_themes(),
-        "current_theme": theme_name,
         "is_authenticated": is_authenticated(request)
     })
