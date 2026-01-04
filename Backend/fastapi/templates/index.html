@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Netflix - Home{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+{% if hero %}
+<div class="relative h-[85vh] w-full">
+    <img src="{{ hero.backdrop }}" class="absolute inset-0 w-full h-full object-cover">
+    <div class="absolute inset-0 bg-gradient-to-r from-[#141414] via-[#141414]/40 to-transparent"></div>
+    <div class="absolute inset-0 netflix-gradient"></div>
+    <div class="absolute bottom-32 left-8 md:left-16 max-w-2xl z-10">
+        <h1 class="text-6xl md:text-8xl font-bold mb-4 drop-shadow-2xl">{{ hero.title }}</h1>
+        <p class="text-lg text-gray-200 mb-6 line-clamp-3 drop-shadow-md">{{ hero.description }}</p>
+        <div class="flex gap-4">
+            <a href="/watch/movie/{{ hero.tmdb_id }}/{{ hero.db_index }}" 
+               class="bg-white text-black px-8 py-3 rounded flex items-center gap-2 font-bold hover:bg-gray-200 transition">
+                <i class="fas fa-play"></i> Watch Now
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="px-8 md:px-16 -mt-20 relative z-20 space-y-12">
+    {% for section in sections %}
+    <div>
+        <h2 class="text-xl md:text-2xl font-bold mb-4">{{ section.title }}</h2>
+        <div class="swiper rowSwiper overflow-visible">
+            <div class="swiper-wrapper">
+                {% for item in section.items %}
+                <div class="swiper-slide transition-transform duration-300 hover:scale-110 hover:z-30">
+                    <a href="/watch/{{ section.type }}/{{ item.tmdb_id }}/{{ item.db_index }}">
+                        <img src="{{ item.poster }}" class="rounded shadow-lg w-full aspect-[2/3] object-cover">
+                        <div class="mt-2 text-sm font-medium truncate">{{ item.title }}</div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    new Swiper(".rowSwiper", {
+        slidesPerView: 2,
+        spaceBetween: 10,
+        breakpoints: {
+            640: { slidesPerView: 3, spaceBetween: 15 },
+            1024: { slidesPerView: 5, spaceBetween: 20 },
+            1440: { slidesPerView: 7, spaceBetween: 20 }
+        }
+    });
+</script>
+{% endblock %}
