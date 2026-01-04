@@ -1,54 +1,89 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}MediaPortal{% endblock %}</title>
+    <title>{% block title %}Links4U Archive{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        background: '#050505',
+                        surface: '#121212',
+                        'surface-light': '#1e1e1e',
+                        accent: '#ffffff',
+                        'accent-dim': '#a1a1aa',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body { background-color: #141414; color: white; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
-        .netflix-gradient { background: linear-gradient(to top, #141414 0%, transparent 100%); }
-        nav { background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%); }
+        body { background-color: #050505; color: #ffffff; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-panel { background: rgba(30, 30, 30, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
-    <nav class="fixed top-0 w-full z-50 px-8 py-4 flex items-center justify-between transition-all" id="navbar">
-        <div class="flex items-center gap-8">
-            <a href="/" class="text-red-600 text-3xl font-black tracking-tighter">MOVIES</a>
-            <div class="hidden md:flex gap-5 text-sm font-medium">
-                <a href="/" class="hover:text-gray-300">Home</a>
-                <a href="/search" class="hover:text-gray-300">Browse All</a>
-            </div>
+<body class="min-h-screen flex flex-col md:flex-row antialiased selection:bg-white selection:text-black">
+
+    <nav class="hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 border-r border-white/5 bg-background z-50">
+        <div class="p-8">
+            <h1 class="text-2xl font-bold tracking-tight">Links4U<span class="text-white/40">.</span></h1>
+            <p class="text-xs text-white/40 mt-1 uppercase tracking-widest">Archive</p>
         </div>
-        <div class="flex items-center gap-6">
-            <form action="/search" method="get" class="relative">
-                <input type="text" name="q" placeholder="Titles, genres..." 
-                       class="bg-black/50 border border-white/30 rounded py-1 px-8 text-sm focus:outline-none focus:border-white w-40 md:w-64 transition-all">
-                <i class="fas fa-search absolute left-3 top-2.5 text-gray-400 text-xs"></i>
-            </form>
-            {% if current_user %}
-            <a href="/admin" class="text-xs bg-red-600 px-3 py-1.5 rounded font-bold">Admin</a>
-            {% else %}
-            <a href="/login" class="text-xs hover:underline text-gray-400">Owner Login</a>
-            {% endif %}
+        
+        <div class="flex-1 px-4 space-y-2">
+            <a href="/" class="flex items-center gap-4 px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-all group {% if request.url.path == '/' %}bg-white/10 text-white{% endif %}">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="font-medium">Home</span>
+            </a>
+            <a href="/search" class="flex items-center gap-4 px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-all group {% if 'search' in request.url.path %}bg-white/10 text-white{% endif %}">
+                <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                <span class="font-medium">Search</span>
+            </a>
+        </div>
+
+        <div class="p-4 border-t border-white/5">
+            <a href="/admin" class="flex items-center gap-4 px-4 py-3 rounded-xl text-white/40 hover:text-white hover:bg-white/5 transition-all text-sm">
+                <i class="fa-solid fa-lock"></i>
+                <span>Admin Access</span>
+            </a>
         </div>
     </nav>
 
-    <main class="flex-grow">
+    <div class="md:hidden fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-white/5 px-6 py-4 flex justify-between items-center">
+        <h1 class="text-lg font-bold">Links4U<span class="text-white/40">.</span></h1>
+    </div>
+
+    <main class="flex-1 md:ml-64 pb-24 md:pb-0 pt-16 md:pt-0 min-h-screen">
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="p-12 text-gray-600 text-center text-sm border-t border-white/5">
-        <p>&copy; 2026 MediaPortal - Direct Telegram VOD</p>
-    </footer>
+    <nav class="md:hidden fixed bottom-0 w-full bg-surface/90 backdrop-blur-lg border-t border-white/5 z-50">
+        <div class="grid grid-cols-3 h-16">
+            <a href="/" class="flex flex-col items-center justify-center text-white/60 hover:text-white {% if request.url.path == '/' %}text-white{% endif %}">
+                <i class="fa-solid fa-house mb-1 text-lg"></i>
+                <span class="text-[10px] font-medium tracking-wide">Home</span>
+            </a>
+            <a href="/search" class="flex flex-col items-center justify-center text-white/60 hover:text-white {% if 'search' in request.url.path %}text-white{% endif %}">
+                <i class="fa-solid fa-magnifying-glass mb-1 text-lg"></i>
+                <span class="text-[10px] font-medium tracking-wide">Search</span>
+            </a>
+             <a href="/admin" class="flex flex-col items-center justify-center text-white/60 hover:text-white">
+                <i class="fa-solid fa-lock mb-1 text-lg"></i>
+                <span class="text-[10px] font-medium tracking-wide">Admin</span>
+            </a>
+        </div>
+    </nav>
 
-    <script>
-        window.onscroll = function() {
-            const nav = document.getElementById('navbar');
-            if (window.pageYOffset > 50) { nav.style.backgroundColor = "#141414"; } 
-            else { nav.style.backgroundColor = "transparent"; }
-        };
-    </script>
 </body>
 </html>
