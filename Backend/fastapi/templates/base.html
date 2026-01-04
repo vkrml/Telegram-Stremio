@@ -3,94 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Telegram Stremio{% endblock %}</title>
+    <title>{% block title %}MediaPortal{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '{{ theme.colors.primary }}',
-                        secondary: '{{ theme.colors.secondary }}',
-                        accent: '{{ theme.colors.accent }}',
-                        background: '{{ theme.colors.background }}',
-                        card: '{{ theme.colors.card }}',
-                        text: '{{ theme.colors.text }}',
-                        'text-secondary': '{{ theme.colors.text_secondary }}'
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        body { background-color: {{ theme.colors.background }}; color: {{ theme.colors.text }}; }
-        .theme-card { background-color: {{ theme.colors.card }}; }
-        .theme-primary { background-color: {{ theme.colors.primary }}; }
-        .theme-secondary { background-color: {{ theme.colors.secondary }}; }
-        .theme-accent { background-color: {{ theme.colors.accent }}; }
-        .theme-text-secondary { color: {{ theme.colors.text_secondary }}; }
+        body { background-color: #141414; color: white; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .netflix-gradient { background: linear-gradient(to top, #141414 0%, transparent 100%); }
     </style>
 </head>
-<body class="min-h-screen">
-    <!-- Navigation -->
-    <nav class="theme-card shadow-lg border-b">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center space-x-4">
-                    <h1 class="text-2xl font-bold text-primary">Telegram Stremio</h1>
-                    {% if current_user %}
-                    <div class="hidden md:flex space-x-4">
-                        <a href="/" class="text-text hover:text-primary px-3 py-2 rounded-md transition-colors">Dashboard</a>
-                        <a href="/media/manage" class="text-text hover:text-primary px-3 py-2 rounded-md transition-colors">Media</a>
-                    </div>
-                    {% endif %}
-                </div>
-                
-                <div class="flex items-center space-x-4">
-                    <!-- Theme Selector -->
-                    <div class="relative">
-                        <form method="post" action="/set-theme" id="theme-form">
-                            <select name="theme" onchange="document.getElementById('theme-form').submit()" class="theme-card border border-gray-300 rounded-md px-3 py-2 text-sm">
-                                {% for theme_key, theme_data in themes.items() %}
-                                <option value="{{ theme_key }}" {% if current_theme == theme_key %}selected{% endif %}>
-                                    {{ theme_data.name }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </form>
-                    </div>
-                    
-                    {% if current_user %}
-                    <div class="flex items-center space-x-4">
-                        <span class="text-sm theme-text-secondary">{{ current_user }}</span>
-                        <a href="/logout" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors">Logout</a>
-                    </div>
-                    {% else %}
-                    <a href="/login" class="theme-primary text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity">Login</a>
-                    {% endif %}
-                </div>
+<body class="min-h-screen flex flex-col">
+    <nav class="fixed top-0 w-full z-50 bg-gradient-to-b from-black/80 to-transparent transition-colors duration-300 px-8 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-8">
+            <a href="/" class="text-red-600 text-3xl font-black tracking-tighter">MOVIES</a>
+            <div class="hidden md:flex gap-4 text-sm font-medium">
+                <a href="/" class="hover:text-gray-300">Home</a>
+                <a href="/search" class="hover:text-gray-300">Browse All</a>
             </div>
+        </div>
+        <div class="flex items-center gap-6">
+            <form action="/search" method="get" class="relative">
+                <input type="text" name="query" placeholder="Titles, people, genres" 
+                       class="bg-black/50 border border-white/30 rounded py-1 px-8 text-sm focus:outline-none focus:border-white w-44 md:w-64 transition-all">
+                <i class="fas fa-search absolute left-3 top-2 text-gray-400 text-xs"></i>
+            </form>
+            {% if current_user %}
+            <a href="/admin" class="text-xs bg-red-600 px-2 py-1 rounded">Admin Dashboard</a>
+            {% endif %}
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="flex-1">
+    <main class="flex-grow">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
-    <footer class="theme-card border-t mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="flex justify-between items-center">
-                <p class="theme-text-secondary text-sm">© 2025 Telegram Stremio. All rights reserved.</p>
-                <div class="flex space-x-4">
-                    <a href="/status" class="theme-text-secondary hover:text-primary text-sm transition-colors">Status</a>
-                    <a href="/stremio" class="theme-text-secondary hover:text-primary text-sm transition-colors">Stremio Guide</a>
-                </div>
-            </div>
-        </div>
+    <footer class="p-10 text-gray-500 text-center text-sm">
+        <p>&copy; 2026 MediaPortal. Powered by Telegram Multi-Token Engine.</p>
     </footer>
 </body>
 </html>
