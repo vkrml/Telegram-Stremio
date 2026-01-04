@@ -8,27 +8,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <style>
         body { background-color: #141414; color: white; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
         .netflix-gradient { background: linear-gradient(to top, #141414 0%, transparent 100%); }
+        nav { background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
-    <nav class="fixed top-0 w-full z-50 bg-gradient-to-b from-black/80 to-transparent transition-colors duration-300 px-8 py-4 flex items-center justify-between">
+    <nav class="fixed top-0 w-full z-50 px-8 py-4 flex items-center justify-between transition-all" id="navbar">
         <div class="flex items-center gap-8">
             <a href="/" class="text-red-600 text-3xl font-black tracking-tighter">MOVIES</a>
-            <div class="hidden md:flex gap-4 text-sm font-medium">
+            <div class="hidden md:flex gap-5 text-sm font-medium">
                 <a href="/" class="hover:text-gray-300">Home</a>
                 <a href="/search" class="hover:text-gray-300">Browse All</a>
             </div>
         </div>
         <div class="flex items-center gap-6">
             <form action="/search" method="get" class="relative">
-                <input type="text" name="query" placeholder="Titles, people, genres" 
-                       class="bg-black/50 border border-white/30 rounded py-1 px-8 text-sm focus:outline-none focus:border-white w-44 md:w-64 transition-all">
-                <i class="fas fa-search absolute left-3 top-2 text-gray-400 text-xs"></i>
+                <input type="text" name="q" placeholder="Titles, genres..." 
+                       class="bg-black/50 border border-white/30 rounded py-1 px-8 text-sm focus:outline-none focus:border-white w-40 md:w-64 transition-all">
+                <i class="fas fa-search absolute left-3 top-2.5 text-gray-400 text-xs"></i>
             </form>
             {% if current_user %}
-            <a href="/admin" class="text-xs bg-red-600 px-2 py-1 rounded">Admin Dashboard</a>
+            <a href="/admin" class="text-xs bg-red-600 px-3 py-1.5 rounded font-bold">Admin</a>
+            {% else %}
+            <a href="/login" class="text-xs hover:underline text-gray-400">Owner Login</a>
             {% endif %}
         </div>
     </nav>
@@ -37,8 +39,16 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="p-10 text-gray-500 text-center text-sm">
-        <p>&copy; 2026 MediaPortal. Powered by Telegram Multi-Token Engine.</p>
+    <footer class="p-12 text-gray-600 text-center text-sm border-t border-white/5">
+        <p>&copy; 2026 MediaPortal - Direct Telegram VOD</p>
     </footer>
+
+    <script>
+        window.onscroll = function() {
+            const nav = document.getElementById('navbar');
+            if (window.pageYOffset > 50) { nav.style.backgroundColor = "#141414"; } 
+            else { nav.style.backgroundColor = "transparent"; }
+        };
+    </script>
 </body>
 </html>
