@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Links4U Archive{% endblock %}</title>
+    <title>{% block title %}Links4U Search{% endblock %}</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     
     <script>
@@ -23,71 +22,101 @@
                         sans: ['Inter', 'sans-serif'],
                     },
                     colors: {
-                        background: '#0f0f0f',
-                        surface: '#181818',
-                        'surface-hover': '#2a2a2a',
-                        primary: '#e50914', /* Netflix Red for accents */
+                        background: '#0a0a0a', /* Deep Charcoal/Black */
+                        surface: '#141414',    /* Card Surface */
+                        'surface-hover': '#262626',
+                        primary: '#e50914',    /* OTT Red Accent */
                         text: '#ffffff',
                         'text-muted': '#a3a3a3',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        body { 
-            background-color: #0f0f0f; 
-            color: #ffffff; 
-            overflow-x: hidden;
-        }
-        /* Smooth scrolling */
-        html { scroll-behavior: smooth; }
+        body { background-color: #0a0a0a; color: #ffffff; }
+        /* Hide Scrollbar but keep functionality */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #e50914; }
         
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f0f0f; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #555; }
-
-        /* Utilities */
-        .text-shadow { text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
-        .glass { background: rgba(20, 20, 20, 0.8); backdrop-filter: blur(10px); }
+        .glass { background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(20px); }
+        .text-glow { text-shadow: 0 0 20px rgba(229, 9, 20, 0.3); }
     </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen selection:bg-primary selection:text-white">
 
-    <nav class="fixed top-0 w-full z-50 transition-all duration-300 bg-gradient-to-b from-black/80 to-transparent p-4">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <a href="/" class="text-2xl font-black tracking-tighter text-primary hover:scale-105 transition-transform">
-                LINKS4U<span class="text-white">.</span>
-            </a>
+    <nav class="fixed top-0 w-full z-50 py-6 px-8 flex justify-between items-center bg-gradient-to-b from-black/80 to-transparent">
+        <a href="/" class="text-2xl font-black tracking-tighter text-white hover:text-primary transition-colors">
+            LINKS4U
+        </a>
 
-            <div class="flex items-center gap-6">
-                <a href="/" class="text-sm font-medium text-white hover:text-gray-300 transition-colors">Home</a>
-                <a href="/search" class="text-sm font-medium text-white hover:text-gray-300 transition-colors">Search</a>
-                {% if request.session.get("authenticated") %}
-                <a href="/admin" class="text-sm font-medium text-white hover:text-gray-300 transition-colors">Admin</a>
-                <a href="/logout" class="text-sm font-bold text-red-500 hover:text-red-400 transition-colors">Logout</a>
-                {% else %}
-                <a href="/login" class="px-4 py-1.5 bg-primary text-white rounded text-sm font-bold hover:bg-red-700 transition-colors">Login</a>
-                {% endif %}
-            </div>
+        <div class="flex items-center gap-6">
+            <button onclick="toggleInfo()" class="text-sm font-semibold text-text-muted hover:text-white transition-colors uppercase tracking-widest">
+                Info
+            </button>
+            {% if request.session.get("authenticated") %}
+                <a href="/admin" class="text-sm font-semibold text-text-muted hover:text-white transition-colors uppercase tracking-widest">Admin</a>
+            {% else %}
+                <a href="/login" class="text-sm font-semibold text-text-muted hover:text-white transition-colors uppercase tracking-widest">Login</a>
+            {% endif %}
         </div>
     </nav>
 
-    <main class="flex-grow">
+    <main class="flex-grow flex flex-col justify-center relative z-10 animate-fade-in">
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="bg-black/50 border-t border-white/5 mt-auto">
-        <div class="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p class="text-xs text-text-muted">© 2026 Links4U Archive. Private Library.</p>
-            <div class="flex gap-4">
-                <a href="/admin/status" class="text-xs text-text-muted hover:text-white transition-colors">System Status</a>
+    <div id="info-modal" class="fixed inset-0 z-[100] hidden bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
+        <div class="max-w-2xl w-full bg-surface border border-white/10 rounded-2xl p-10 relative">
+            <button onclick="toggleInfo()" class="absolute top-6 right-6 text-white/50 hover:text-white">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+            
+            <h2 class="text-3xl font-bold mb-2">Platform Guide</h2>
+            <p class="text-text-muted mb-8">How to use the Search Engine</p>
+            
+            <div class="space-y-6">
+                <div class="flex gap-4">
+                    <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-primary font-bold">1</div>
+                    <div>
+                        <h4 class="font-bold">Search First</h4>
+                        <p class="text-sm text-text-muted">This is a search-only platform. Enter a Movie or TV Show title to query the database.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-primary font-bold">2</div>
+                    <div>
+                        <h4 class="font-bold">Select Content</h4>
+                        <p class="text-sm text-text-muted">Click on a poster to view details, available qualities, and episodes.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-primary font-bold">3</div>
+                    <div>
+                        <h4 class="font-bold">Direct Stream</h4>
+                        <p class="text-sm text-text-muted">Click "Play" to stream immediately in your browser using the native network player.</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </footer>
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        function toggleInfo() {
+            const modal = document.getElementById('info-modal');
+            modal.classList.toggle('hidden');
+        }
+    </script>
 </body>
 </html>
