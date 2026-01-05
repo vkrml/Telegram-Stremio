@@ -1,50 +1,57 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="p-6 md:p-12 min-h-screen">
+<div class="w-full max-w-7xl mx-auto px-6 py-20">
     
-    <div class="max-w-3xl mx-auto mb-12">
-        <form action="/search" method="get" class="relative">
-            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-white/30"></i>
-            <input type="text" name="q" value="{{ query }}" placeholder="Search archive..." 
-                   class="w-full bg-surface-light border border-white/10 rounded-2xl py-4 pl-12 pr-6 text-white placeholder-white/30 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/30 transition-all shadow-xl"
-                   autofocus>
+    <div class="mb-10">
+        <form action="/search" method="get" class="relative max-w-xl">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-text-muted"></i>
+            <input type="text" name="q" value="{{ query }}" 
+                   class="w-full bg-surface border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:outline-none focus:border-primary transition-colors"
+                   placeholder="Refine search...">
         </form>
     </div>
 
     {% if query %}
-        <div class="flex items-center justify-between mb-8 border-b border-white/5 pb-4">
-            <h2 class="text-lg font-medium text-white/80">Results for "{{ query }}"</h2>
-            <span class="text-xs text-white/40">{{ results|length }} found</span>
+        <div class="flex items-center gap-4 mb-8">
+            <h2 class="text-2xl font-bold text-white">Results</h2>
+            <span class="px-2 py-0.5 bg-white/10 rounded text-xs font-bold text-text-muted">{{ results|length }} FOUND</span>
         </div>
 
         {% if results %}
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 gap-y-8">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
             {% for media in results %}
-            <a href="/view/{{ media.media_type }}/{{ media.tmdb_id }}?db_index={{ media.db_index }}" class="group block relative">
-                <div class="aspect-[2/3] rounded-2xl overflow-hidden bg-surface-light relative mb-3 ring-1 ring-white/5 group-hover:ring-white/20 transition-all">
-                    <img src="{{ media.poster }}" alt="{{ media.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-80 group-hover:opacity-100" loading="lazy">
+            <a href="/view/{{ media.media_type }}/{{ media.tmdb_id }}?db_index={{ media.db_index }}" 
+               class="group block relative bg-surface rounded-xl overflow-hidden hover:ring-2 hover:ring-primary transition-all duration-300 hover:-translate-y-2 shadow-lg">
+                
+                <div class="aspect-[2/3] w-full relative">
+                    <img src="{{ media.poster }}" alt="{{ media.title }}" class="w-full h-full object-cover" loading="lazy">
+                    
+                    <div class="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white shadow-glow">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                    </div>
                 </div>
-                <h3 class="text-sm font-medium text-white/90 truncate group-hover:text-white">{{ media.title }}</h3>
-                <div class="flex justify-between items-center mt-1">
-                    <p class="text-xs text-white/40">{{ media.release_year }}</p>
-                    <span class="text-[10px] uppercase tracking-wider text-white/30 border border-white/10 px-1 rounded">{{ media.media_type }}</span>
+
+                <div class="p-4">
+                    <h3 class="font-bold text-white text-sm leading-tight mb-2 truncate">{{ media.title }}</h3>
+                    <div class="flex justify-between items-center text-xs text-text-muted">
+                        <span>{{ media.release_year }}</span>
+                        <span class="border border-white/20 px-1 rounded uppercase">{{ media.media_type }}</span>
+                    </div>
                 </div>
             </a>
             {% endfor %}
         </div>
         {% else %}
-        <div class="text-center py-20">
-            <i class="fa-regular fa-folder-open text-4xl text-white/20 mb-4"></i>
-            <p class="text-white/40">No records found in the archive.</p>
+        <div class="flex flex-col items-center justify-center py-32 text-text-muted">
+            <i class="fa-regular fa-folder-open text-6xl mb-4 opacity-50"></i>
+            <p class="text-lg">No matches found for "{{ query }}"</p>
+            <a href="/" class="mt-4 text-primary hover:underline">Try another search</a>
         </div>
         {% endif %}
 
-    {% else %}
-        <div class="text-center py-32 opacity-30">
-            <p class="text-sm tracking-widest uppercase">Begin typing to search the digital vault</p>
-        </div>
     {% endif %}
-
 </div>
 {% endblock %}
