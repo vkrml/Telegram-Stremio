@@ -4,86 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Links4U Archive{% endblock %}</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Outfit', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
                     },
                     colors: {
-                        background: '#050505',
-                        surface: '#121212',
-                        'surface-light': '#1e1e1e',
-                        accent: '#ffffff',
-                        'accent-dim': '#a1a1aa',
+                        background: '#0f0f0f',
+                        surface: '#181818',
+                        'surface-hover': '#2a2a2a',
+                        primary: '#e50914', /* Netflix Red for accents */
+                        text: '#ffffff',
+                        'text-muted': '#a3a3a3',
                     }
                 }
             }
         }
     </script>
     <style>
-        body { background-color: #050505; color: #ffffff; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .glass-panel { background: rgba(30, 30, 30, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        body { 
+            background-color: #0f0f0f; 
+            color: #ffffff; 
+            overflow-x: hidden;
+        }
+        /* Smooth scrolling */
+        html { scroll-behavior: smooth; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f0f0f; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        /* Utilities */
+        .text-shadow { text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        .glass { background: rgba(20, 20, 20, 0.8); backdrop-filter: blur(10px); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col md:flex-row antialiased selection:bg-white selection:text-black">
+<body class="flex flex-col min-h-screen">
 
-    <nav class="hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 border-r border-white/5 bg-background z-50">
-        <div class="p-8">
-            <h1 class="text-2xl font-bold tracking-tight">Links4U<span class="text-white/40">.</span></h1>
-            <p class="text-xs text-white/40 mt-1 uppercase tracking-widest">Archive</p>
-        </div>
-        
-        <div class="flex-1 px-4 space-y-2">
-            <a href="/" class="flex items-center gap-4 px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-all group {% if request.url.path == '/' %}bg-white/10 text-white{% endif %}">
-                <i class="fa-solid fa-house text-lg"></i>
-                <span class="font-medium">Home</span>
+    <nav class="fixed top-0 w-full z-50 transition-all duration-300 bg-gradient-to-b from-black/80 to-transparent p-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="/" class="text-2xl font-black tracking-tighter text-primary hover:scale-105 transition-transform">
+                LINKS4U<span class="text-white">.</span>
             </a>
-            <a href="/search" class="flex items-center gap-4 px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-all group {% if 'search' in request.url.path %}bg-white/10 text-white{% endif %}">
-                <i class="fa-solid fa-magnifying-glass text-lg"></i>
-                <span class="font-medium">Search</span>
-            </a>
-        </div>
 
-        <div class="p-4 border-t border-white/5">
-            <a href="/admin" class="flex items-center gap-4 px-4 py-3 rounded-xl text-white/40 hover:text-white hover:bg-white/5 transition-all text-sm">
-                <i class="fa-solid fa-lock"></i>
-                <span>Admin Access</span>
-            </a>
+            <div class="flex items-center gap-6">
+                <a href="/" class="text-sm font-medium text-white hover:text-gray-300 transition-colors">Home</a>
+                <a href="/search" class="text-sm font-medium text-white hover:text-gray-300 transition-colors">Search</a>
+                {% if request.session.get("authenticated") %}
+                <a href="/admin" class="text-sm font-medium text-white hover:text-gray-300 transition-colors">Admin</a>
+                <a href="/logout" class="text-sm font-bold text-red-500 hover:text-red-400 transition-colors">Logout</a>
+                {% else %}
+                <a href="/login" class="px-4 py-1.5 bg-primary text-white rounded text-sm font-bold hover:bg-red-700 transition-colors">Login</a>
+                {% endif %}
+            </div>
         </div>
     </nav>
 
-    <div class="md:hidden fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-white/5 px-6 py-4 flex justify-between items-center">
-        <h1 class="text-lg font-bold">Links4U<span class="text-white/40">.</span></h1>
-    </div>
-
-    <main class="flex-1 md:ml-64 pb-24 md:pb-0 pt-16 md:pt-0 min-h-screen">
+    <main class="flex-grow">
         {% block content %}{% endblock %}
     </main>
 
-    <nav class="md:hidden fixed bottom-0 w-full bg-surface/90 backdrop-blur-lg border-t border-white/5 z-50">
-        <div class="grid grid-cols-3 h-16">
-            <a href="/" class="flex flex-col items-center justify-center text-white/60 hover:text-white {% if request.url.path == '/' %}text-white{% endif %}">
-                <i class="fa-solid fa-house mb-1 text-lg"></i>
-                <span class="text-[10px] font-medium tracking-wide">Home</span>
-            </a>
-            <a href="/search" class="flex flex-col items-center justify-center text-white/60 hover:text-white {% if 'search' in request.url.path %}text-white{% endif %}">
-                <i class="fa-solid fa-magnifying-glass mb-1 text-lg"></i>
-                <span class="text-[10px] font-medium tracking-wide">Search</span>
-            </a>
-             <a href="/admin" class="flex flex-col items-center justify-center text-white/60 hover:text-white">
-                <i class="fa-solid fa-lock mb-1 text-lg"></i>
-                <span class="text-[10px] font-medium tracking-wide">Admin</span>
-            </a>
+    <footer class="bg-black/50 border-t border-white/5 mt-auto">
+        <div class="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-xs text-text-muted">© 2026 Links4U Archive. Private Library.</p>
+            <div class="flex gap-4">
+                <a href="/admin/status" class="text-xs text-text-muted hover:text-white transition-colors">System Status</a>
+            </div>
         </div>
-    </nav>
+    </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 </body>
 </html>
