@@ -1,94 +1,64 @@
 {% extends "base.html" %}
 
-{% block title %}Admin Console - Links4U{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="p-6 md:p-12">
-    <div class="flex items-end justify-between mb-12">
+<div class="w-full max-w-7xl mx-auto px-6 py-12">
+    
+    <div class="flex flex-col md:flex-row items-center justify-between mb-12 gap-6">
         <div>
-            <h1 class="text-3xl font-bold text-white mb-2">Command Center</h1>
-            <p class="text-white/40 text-sm">System Overview & Diagnostics</p>
+            <h1 class="text-3xl font-bold text-white mb-2">System Overview</h1>
+            <p class="text-text-muted text-sm">Monitoring real-time index stats</p>
         </div>
-        <div class="flex items-center gap-4">
-            <span class="px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-xs font-bold border border-green-500/20 animate-pulse">
-                SYSTEM ONLINE
-            </span>
-            <a href="/logout" class="text-xs text-red-400 hover:text-red-300 font-bold uppercase tracking-wider">Log Out</a>
+        <div class="flex gap-4">
+            <a href="/admin/media/manage?media_type=movie" class="px-6 py-2 bg-surface hover:bg-surface-hover border border-white/10 rounded-lg font-bold text-sm transition-colors">Movies</a>
+            <a href="/admin/media/manage?media_type=tv" class="px-6 py-2 bg-surface hover:bg-surface-hover border border-white/10 rounded-lg font-bold text-sm transition-colors">TV Series</a>
         </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-        <div class="bg-surface-light p-6 rounded-2xl border border-white/5">
-            <p class="text-white/30 text-[10px] font-bold uppercase tracking-widest mb-2">Total Movies</p>
-            <p class="text-3xl font-bold text-white">{{ system_stats.movies }}</p>
+        <div class="bg-surface p-6 rounded-xl border border-white/5 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><i class="fa-solid fa-film text-4xl"></i></div>
+            <p class="text-xs font-bold text-text-muted uppercase tracking-widest mb-1">Movies</p>
+            <p class="text-3xl font-black text-white">{{ system_stats.movies }}</p>
         </div>
-        <div class="bg-surface-light p-6 rounded-2xl border border-white/5">
-            <p class="text-white/30 text-[10px] font-bold uppercase tracking-widest mb-2">Total TV Series</p>
-            <p class="text-3xl font-bold text-white">{{ system_stats.tv_shows }}</p>
+        <div class="bg-surface p-6 rounded-xl border border-white/5 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><i class="fa-solid fa-tv text-4xl"></i></div>
+            <p class="text-xs font-bold text-text-muted uppercase tracking-widest mb-1">Series</p>
+            <p class="text-3xl font-black text-white">{{ system_stats.tv_shows }}</p>
         </div>
-        <div class="bg-surface-light p-6 rounded-2xl border border-white/5">
-            <p class="text-white/30 text-[10px] font-bold uppercase tracking-widest mb-2">Active Bots</p>
-            <p class="text-3xl font-bold text-white">{{ system_stats.connected_bots }}</p>
+        <div class="bg-surface p-6 rounded-xl border border-white/5 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><i class="fa-solid fa-robot text-4xl"></i></div>
+            <p class="text-xs font-bold text-text-muted uppercase tracking-widest mb-1">Bots</p>
+            <p class="text-3xl font-black text-white">{{ system_stats.connected_bots }}</p>
         </div>
-        <div class="bg-surface-light p-6 rounded-2xl border border-white/5">
-            <p class="text-white/30 text-[10px] font-bold uppercase tracking-widest mb-2">System Uptime</p>
-            <p class="text-xl font-bold text-white font-mono">{{ system_stats.uptime }}</p>
+        <div class="bg-surface p-6 rounded-xl border border-white/5 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><i class="fa-solid fa-clock text-4xl"></i></div>
+            <p class="text-xs font-bold text-text-muted uppercase tracking-widest mb-1">Uptime</p>
+            <p class="text-xl font-bold text-primary font-mono">{{ system_stats.uptime }}</p>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        
-        <div class="bg-surface-light p-8 rounded-2xl border border-white/5">
-            <h3 class="text-lg font-bold text-white mb-6">Storage Nodes</h3>
-            <div class="space-y-4">
-                {% for db in system_stats.databases %}
-                <div class="flex items-center justify-between p-4 bg-background rounded-xl border border-white/5">
-                    <div class="flex items-center gap-4">
-                        <div class="w-2 h-2 rounded-full bg-green-500"></div>
-                        <div>
-                            <p class="text-sm font-bold text-white">{{ db.db_name }}</p>
-                            <p class="text-xs text-white/40">Used: {{ "%.1f"|format(db.storageSize / 1024 / 1024) }} MB</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-xs text-white/60 font-mono">{{ "{:,}".format(db.movie_count) }} Movies</p>
-                        <p class="text-xs text-white/60 font-mono">{{ "{:,}".format(db.tv_count) }} Shows</p>
+    <div class="bg-surface border border-white/5 rounded-2xl p-8">
+        <h3 class="text-xl font-bold mb-6">Database Nodes</h3>
+        <div class="grid gap-4">
+            {% for db in system_stats.databases %}
+            <div class="flex items-center justify-between p-4 bg-black/40 rounded-lg border border-white/5">
+                <div class="flex items-center gap-4">
+                    <div class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_#22c55e]"></div>
+                    <div>
+                        <p class="font-bold text-white">{{ db.db_name }}</p>
+                        <p class="text-xs text-text-muted">Storage: {{ "%.1f"|format(db.storageSize / 1024 / 1024) }} MB</p>
                     </div>
                 </div>
-                {% endfor %}
+                <div class="text-right text-xs font-mono text-gray-400">
+                    <span class="block">{{ "{:,}".format(db.movie_count) }} Movies</span>
+                    <span class="block">{{ "{:,}".format(db.tv_count) }} TV Shows</span>
+                </div>
             </div>
-        </div>
-
-        <div class="bg-surface-light p-8 rounded-2xl border border-white/5">
-            <h3 class="text-lg font-bold text-white mb-6">Management</h3>
-            <div class="grid grid-cols-1 gap-4">
-                <a href="/admin/media/manage?media_type=movie" class="group flex items-center justify-between p-4 bg-background rounded-xl border border-white/5 hover:border-white/20 transition-all">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">
-                            <i class="fa-solid fa-film"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">Manage Movies</p>
-                            <p class="text-xs text-white/40">Edit metadata, delete content</p>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-white/20 group-hover:text-white transition-colors"></i>
-                </a>
-
-                <a href="/admin/media/manage?media_type=tv" class="group flex items-center justify-between p-4 bg-background rounded-xl border border-white/5 hover:border-white/20 transition-all">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400">
-                            <i class="fa-solid fa-tv"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold text-white group-hover:text-purple-400 transition-colors">Manage TV Series</p>
-                            <p class="text-xs text-white/40">Edit seasons, episodes, files</p>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-white/20 group-hover:text-white transition-colors"></i>
-                </a>
-            </div>
+            {% endfor %}
         </div>
     </div>
+
 </div>
 {% endblock %}
