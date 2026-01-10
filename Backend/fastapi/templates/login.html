@@ -1,38 +1,40 @@
 {% extends "base.html" %}
 
-{% block title %}Authentication{% endblock %}
+{% block title %}Access Control{% endblock %}
 
 {% block content %}
-<div class="w-full max-w-md bg-surface border border-white/10 rounded-2xl p-10 shadow-2xl relative overflow-hidden">
-    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
-    
-    <div class="text-center mb-10">
-        <h1 class="text-3xl font-black text-white tracking-tight mb-2">LINKS4U</h1>
-        <p class="text-text-muted text-xs uppercase tracking-[0.2em] font-bold">Secure Access</p>
-    </div>
-    
-    {% if error %}
-    <div class="bg-red-500/10 border border-red-500/20 text-red-500 px-4 py-3 rounded-lg mb-6 text-sm text-center font-bold">
-        {{ error }}
-    </div>
-    {% endif %}
-    
-    <form method="post" class="space-y-6">
-        <div>
-            <label class="block text-xs font-bold text-text-muted uppercase mb-2">Username</label>
-            <input type="text" name="username" required 
-                   class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all">
+<div class="flex-grow flex items-center justify-center p-6">
+    <div class="w-full max-w-md bg-white border-3 border-black p-10 shadow-brutal-lg relative">
+        
+        <div class="mb-10 text-center">
+            <div class="w-12 h-12 bg-black text-white flex items-center justify-center font-serif font-bold text-2xl mx-auto mb-4">L</div>
+            <h1 class="font-serif text-3xl font-bold tracking-tight mb-2">System Login</h1>
+            <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Authorized Personnel Only</p>
         </div>
         
-        <div>
-            <label class="block text-xs font-bold text-text-muted uppercase mb-2">Password</label>
-            <input type="password" name="password" required 
-                   class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all">
+        {% if error %}
+        <div class="bg-red-50 border-2 border-red-500 text-red-600 px-4 py-3 font-bold text-sm text-center mb-8">
+            {{ error }}
         </div>
+        {% endif %}
         
-        <button type="submit" class="w-full bg-white hover:bg-gray-200 text-black font-bold py-3.5 rounded-lg transition-all transform hover:scale-[1.02]">
-            ENTER
-        </button>
-    </form>
+        <form method="post" class="space-y-6">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-widest mb-2">Username</label>
+                <input type="text" name="username" required 
+                       class="w-full bg-background border-2 border-black px-4 py-3 font-bold focus:outline-none focus:shadow-brutal transition-all">
+            </div>
+            
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-widest mb-2">Password</label>
+                <input type="password" name="password" required 
+                       class="w-full bg-background border-2 border-black px-4 py-3 font-bold focus:outline-none focus:shadow-brutal transition-all">
+            </div>
+            
+            <button type="submit" class="w-full bg-black text-white font-bold uppercase tracking-widest py-4 border-2 border-transparent hover:bg-accent hover:text-black hover:border-black shadow-brutal hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all">
+                Authenticate
+            </button>
+        </form>
+    </div>
 </div>
 {% endblock %}
