@@ -3,85 +3,71 @@
 {% block title %}Edit Metadata{% endblock %}
 
 {% block content %}
-<div class="p-6 md:p-12 max-w-5xl mx-auto">
+<div class="w-full max-w-5xl mx-auto px-4 md:px-8 py-8">
     
     <div class="mb-8 flex items-center justify-between">
         <div>
-            <a href="/admin/media/manage?media_type={{ media_type }}" class="text-xs font-bold text-text-muted hover:text-white uppercase mb-2 block tracking-widest"><i class="fa-solid fa-arrow-left mr-2"></i>Back</a>
-            <h1 class="text-3xl font-bold text-white">Edit Metadata</h1>
+            <a href="/admin/media/manage?media_type={{ media_type }}" class="text-xs font-bold uppercase tracking-widest hover:underline mb-1 block"><i class="fa-solid fa-arrow-left mr-1"></i> Back</a>
+            <h1 class="font-serif text-3xl font-bold">Edit Metadata</h1>
         </div>
-        <span class="font-mono text-xs bg-surface border border-white/10 px-3 py-1 rounded text-text-muted">ID: {{ tmdb_id }}</span>
+        <span class="font-mono text-xs bg-black text-white px-2 py-1 font-bold">ID: {{ tmdb_id }}</span>
     </div>
 
-    <form onsubmit="updateMedia(event)" class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-        <div class="lg:col-span-1 space-y-4">
-            <img src="{{ media_details.poster }}" class="w-full rounded-lg border border-white/10 shadow-lg">
-            <div>
-                <label class="block text-xs font-bold text-text-muted mb-1 uppercase">Poster</label>
-                <input type="text" name="poster" value="{{ media_details.poster }}" class="w-full bg-surface border border-white/10 rounded px-3 py-2 text-sm text-white focus:border-primary focus:outline-none">
+    <form onsubmit="updateMedia(event)" class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div class="md:col-span-1 space-y-4">
+            <div class="border-2 border-black p-1 bg-white shadow-brutal-sm">
+                <img src="{{ media_details.poster }}" class="w-full">
             </div>
             <div>
-                <label class="block text-xs font-bold text-text-muted mb-1 uppercase">Backdrop</label>
-                <input type="text" name="backdrop" value="{{ media_details.backdrop }}" class="w-full bg-surface border border-white/10 rounded px-3 py-2 text-sm text-white focus:border-primary focus:outline-none">
+                <label class="block text-[10px] font-bold uppercase mb-1">Poster URL</label>
+                <input type="text" name="poster" value="{{ media_details.poster }}" class="w-full border-2 border-black px-2 py-1 text-xs">
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold uppercase mb-1">Backdrop URL</label>
+                <input type="text" name="backdrop" value="{{ media_details.backdrop }}" class="w-full border-2 border-black px-2 py-1 text-xs">
             </div>
         </div>
 
-        <div class="lg:col-span-2 space-y-6 bg-surface p-8 rounded-xl border border-white/5">
-            <div class="grid grid-cols-2 gap-6">
+        <div class="md:col-span-2 space-y-6 bg-white p-6 border-2 border-black shadow-brutal">
+            <div class="grid grid-cols-2 gap-4">
                 <div class="col-span-2">
-                    <label class="block text-xs font-bold text-text-muted mb-1 uppercase">Title</label>
-                    <input type="text" name="title" value="{{ media_details.title }}" class="w-full bg-black/30 border border-white/10 rounded px-4 py-3 text-white font-bold text-lg focus:border-primary focus:outline-none">
+                    <label class="block text-[10px] font-bold uppercase mb-1">Title</label>
+                    <input type="text" name="title" value="{{ media_details.title }}" class="w-full border-2 border-black px-3 py-2 font-bold text-lg">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-text-muted mb-1 uppercase">Year</label>
-                    <input type="number" name="release_year" value="{{ media_details.release_year }}" class="w-full bg-black/30 border border-white/10 rounded px-4 py-3 text-white focus:border-primary focus:outline-none">
+                    <label class="block text-[10px] font-bold uppercase mb-1">Year</label>
+                    <input type="number" name="release_year" value="{{ media_details.release_year }}" class="w-full border-2 border-black px-3 py-2 font-bold">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-text-muted mb-1 uppercase">Rating</label>
-                    <input type="number" step="0.1" name="rating" value="{{ media_details.rating }}" class="w-full bg-black/30 border border-white/10 rounded px-4 py-3 text-white focus:border-primary focus:outline-none">
+                    <label class="block text-[10px] font-bold uppercase mb-1">Rating</label>
+                    <input type="number" step="0.1" name="rating" value="{{ media_details.rating }}" class="w-full border-2 border-black px-3 py-2 font-bold">
                 </div>
             </div>
             <div>
-                <label class="block text-xs font-bold text-text-muted mb-1 uppercase">Description</label>
-                <textarea name="description" rows="6" class="w-full bg-black/30 border border-white/10 rounded px-4 py-3 text-white text-sm focus:border-primary focus:outline-none leading-relaxed">{{ media_details.description }}</textarea>
+                <label class="block text-[10px] font-bold uppercase mb-1">Overview</label>
+                <textarea name="description" rows="6" class="w-full border-2 border-black px-3 py-2 text-sm">{{ media_details.description }}</textarea>
             </div>
-            <button type="submit" class="bg-white hover:bg-gray-200 text-black font-bold px-6 py-3 rounded-lg w-full transition-colors uppercase tracking-widest">Save Changes</button>
+            <button type="submit" class="bg-black text-white font-bold px-6 py-3 w-full uppercase text-xs tracking-widest hover:bg-accent hover:text-black border-2 border-transparent hover:border-black transition-all">Save Changes</button>
         </div>
     </form>
 
-    <div class="border-t border-white/10 pt-8">
-        <h2 class="text-xl font-bold text-white mb-6">Linked Files</h2>
+    <div class="border-t-2 border-black pt-8">
+        <h2 class="font-serif text-xl font-bold mb-4">Linked Files</h2>
         
         {% if media_type == 'movie' %}
             <div class="space-y-2">
-                {% for file in media_details.telegram %}
-                <div class="flex justify-between items-center bg-surface p-4 rounded-lg border border-white/5">
-                    <div class="flex items-center gap-3">
-                        <span class="bg-white/10 text-white text-xs font-bold px-2 py-1 rounded">{{ file.quality }}</span>
-                        <span class="text-sm text-gray-300">{{ file.name }}</span>
+                {% for file in media.telegram %}
+                <div class="flex justify-between items-center bg-white p-3 border border-black">
+                    <div class="flex items-center gap-2 overflow-hidden">
+                        <span class="bg-black text-white text-[10px] font-bold px-1">{{ file.quality }}</span>
+                        <span class="text-xs truncate max-w-xs">{{ file.name }}</span>
                     </div>
-                    <button onclick="deleteFile('{{ file.id }}')" class="text-red-500 hover:text-white text-xs font-bold uppercase transition-colors">Remove</button>
+                    <button type="button" onclick="deleteFile('{{ file.id }}')" class="text-[10px] font-bold text-red-600 hover:underline uppercase">Remove</button>
                 </div>
                 {% endfor %}
             </div>
         {% else %}
-            <div class="space-y-4">
-                {% for season in media_details.seasons|sort(attribute='season_number') %}
-                <div class="bg-surface rounded-lg border border-white/5">
-                    <div class="px-6 py-3 bg-white/5 font-bold text-sm text-white">Season {{ season.season_number }}</div>
-                    <div class="divide-y divide-white/5">
-                        {% for episode in season.episodes|sort(attribute='episode_number') %}
-                            {% for file in episode.telegram %}
-                            <div class="flex justify-between items-center px-6 py-3">
-                                <span class="text-sm text-gray-400">E{{ episode.episode_number }} <span class="mx-2 text-white/20">|</span> {{ file.quality }}</span>
-                                <button onclick="deleteTvFile({{ season.season_number }}, {{ episode.episode_number }}, '{{ file.id }}')" class="text-red-500 hover:text-white text-xs font-bold uppercase">Remove</button>
-                            </div>
-                            {% endfor %}
-                        {% endfor %}
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
+            <p class="text-xs text-gray-500">Episode file management is available via direct API or re-indexing.</p>
         {% endif %}
     </div>
 </div>
@@ -93,13 +79,10 @@
         await fetch(`/api/media/update?tmdb_id={{ tmdb_id }}&db_index={{ db_index }}&media_type={{ media_type }}`, {
             method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)
         });
-        alert('Changes saved successfully'); location.reload();
+        alert('Saved'); location.reload();
     }
     async function deleteFile(id) {
-        if(confirm('Delete file permanently?')) { await fetch(`/api/media/delete-quality?tmdb_id={{ tmdb_id }}&db_index={{ db_index }}&id=${id}`, { method: 'DELETE' }); location.reload(); }
-    }
-    async function deleteTvFile(s, e, id) {
-        if(confirm('Delete file permanently?')) { await fetch(`/api/media/delete-tv-quality?tmdb_id={{ tmdb_id }}&db_index={{ db_index }}&season=${s}&episode=${e}&id=${id}`, { method: 'DELETE' }); location.reload(); }
+        if(confirm('Remove file?')) { await fetch(`/api/media/delete-quality?tmdb_id={{ tmdb_id }}&db_index={{ db_index }}&id=${id}`, { method: 'DELETE' }); location.reload(); }
     }
 </script>
 {% endblock %}
