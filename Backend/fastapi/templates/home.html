@@ -1,37 +1,32 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="flex-grow flex flex-col justify-center items-center px-6 w-full max-w-5xl mx-auto -mt-16">
+<div class="flex-grow flex flex-col justify-center items-center px-4 w-full max-w-4xl mx-auto py-12">
     
-    <div class="w-full text-center mb-10">
-        <div class="inline-block border-2 border-black px-4 py-1 font-bold text-xs uppercase tracking-[0.2em] mb-4 bg-accent shadow-brutal">
-            Restricted Access Archive
+    <div class="w-full text-center mb-8 md:mb-12">
+        <div class="inline-block border-2 border-black px-3 py-1 font-bold text-[10px] uppercase tracking-[0.2em] mb-4 bg-accent shadow-brutal-sm">
+            Private Index
         </div>
-        <h1 class="font-serif text-6xl md:text-8xl font-black tracking-tight mb-6 leading-[0.9]">
-            SEARCH <br /> THE INDEX.
+        <h1 class="font-serif text-5xl md:text-8xl font-black tracking-tighter mb-4 leading-[0.9]">
+            SEARCH <br /> ARCHIVE.
         </h1>
-        <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-medium">
-            Enter a title below to query the database. <br class="hidden md:block">No content is displayed until a valid search is performed.
+        <p class="text-sm md:text-lg text-gray-600 max-w-lg mx-auto font-medium leading-relaxed">
+            Enter a Movie or TV Show title to query the database. Content is hidden until searched.
         </p>
     </div>
 
-    <form action="/search" method="get" class="w-full max-w-2xl relative group">
+    <form action="/search" method="get" class="w-full max-w-xl relative group">
         <div class="relative">
             <input type="text" 
                    name="q" 
-                   class="block w-full px-6 py-6 bg-surface border-3 border-black text-2xl font-bold placeholder-gray-300 focus:outline-none focus:bg-white transition-all shadow-brutal focus:shadow-brutal-lg focus:-translate-y-1" 
-                   placeholder="Type a movie or series title..." 
+                   class="block w-full px-5 py-5 bg-white border-3 border-black text-lg md:text-xl font-bold placeholder-gray-300 focus:outline-none transition-all shadow-brutal focus:shadow-brutal-lg focus:-translate-y-1 rounded-none appearance-none" 
+                   placeholder="e.g. Breaking Bad" 
                    autocomplete="off" 
                    autofocus>
             
-            <button type="submit" class="absolute inset-y-3 right-3 bg-black text-white px-8 font-bold uppercase tracking-widest hover:bg-accent hover:text-black border-2 border-transparent hover:border-black transition-all">
-                Search
+            <button type="submit" class="absolute inset-y-2 right-2 bg-black text-white px-6 font-bold uppercase text-xs tracking-widest hover:bg-accent hover:text-black border-2 border-transparent hover:border-black transition-all">
+                Go
             </button>
-        </div>
-        
-        <div class="mt-6 flex justify-between text-xs font-bold uppercase tracking-widest text-gray-400">
-            <span>Server: Online</span>
-            <span>Index: v1.5.0</span>
         </div>
     </form>
 
