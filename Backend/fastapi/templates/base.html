@@ -19,13 +19,18 @@
                         serif: ['Playfair Display', 'serif'],
                     },
                     colors: {
-                        background: '#f0fdf4',
+                        background: '#f0fdf4', /* Light Green Tint */
                         surface: '#ffffff',
-                        accent: '#dcfce7',
+                        accent: '#dcfce7',     /* Green Accent */
+                        border: '#000000',
                     },
                     boxShadow: {
                         'brutal': '4px 4px 0px 0px #000000',
                         'brutal-sm': '2px 2px 0px 0px #000000',
+                        'brutal-lg': '8px 8px 0px 0px #000000',
+                    },
+                    borderWidth: {
+                        '3': '3px',
                     }
                 }
             }
@@ -33,36 +38,54 @@
     </script>
     <style>
         body { background-color: #f0fdf4; color: #000000; -webkit-tap-highlight-color: transparent; }
-        /* Custom scrollbar for better mobile feel */
+        
+        /* Mobile Scrollbar Fixes */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #000; border-radius: 3px; }
         
-        /* Accordion Animation */
+        /* Force word breaks on long filenames */
+        .break-filename {
+            word-break: break-all;
+            overflow-wrap: break-word;
+            white-space: normal;
+        }
+
+        /* Animation for Details/Summary */
         details > summary { list-style: none; }
         details > summary::-webkit-details-marker { display: none; }
-        details[open] summary ~ * { animation: sweep .3s ease-in-out; }
+        details[open] summary ~ * { animation: sweep .2s ease-in-out; }
         @keyframes sweep { 
-            0% { opacity: 0; transform: translateY(-10px); } 
+            0% { opacity: 0; transform: translateY(-5px); } 
             100% { opacity: 1; transform: translateY(0); } 
         }
     </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen selection:bg-black selection:text-white">
 
-    <nav class="sticky top-0 z-50 bg-surface border-b-2 border-black px-4 py-3 flex justify-between items-center">
-        <a href="/" class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-black text-white flex items-center justify-center font-serif font-bold text-lg">L</div>
+    <nav class="sticky top-0 z-50 bg-surface border-b-2 border-black px-4 py-3 flex justify-between items-center shadow-sm">
+        <a href="/" class="flex items-center gap-2 group">
+            <div class="w-9 h-9 bg-black text-white flex items-center justify-center font-serif font-bold text-lg border-2 border-transparent group-hover:bg-white group-hover:text-black group-hover:border-black transition-all">L</div>
             <span class="font-serif text-xl font-bold tracking-tight">Links4U</span>
         </a>
-        <a href="/search" class="w-10 h-10 border-2 border-black flex items-center justify-center bg-accent shadow-brutal-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
-            <i class="fa-solid fa-magnifying-glass"></i>
-        </a>
+
+        <div class="flex items-center gap-4">
+            <a href="/search" class="w-10 h-10 border-2 border-black flex items-center justify-center bg-accent shadow-brutal-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </a>
+            {% if request.session.get("authenticated") %}
+                <a href="/admin" class="hidden md:block font-bold text-xs uppercase tracking-widest hover:underline">Admin</a>
+            {% endif %}
+        </div>
     </nav>
 
-    <main class="flex-grow">
+    <main class="flex-grow flex flex-col">
         {% block content %}{% endblock %}
     </main>
+
+    <footer class="border-t-2 border-black py-8 text-center bg-white">
+        <p class="font-bold text-xs uppercase tracking-widest text-gray-400">Links4U Archive Index</p>
+    </footer>
 
 </body>
 </html>
