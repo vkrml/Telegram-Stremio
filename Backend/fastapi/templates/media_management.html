@@ -3,21 +3,23 @@
 {% block title %}Library Manager{% endblock %}
 
 {% block content %}
-<div class="p-6 md:p-12 w-full max-w-[1600px] mx-auto">
+<div class="w-full max-w-[1920px] mx-auto px-4 md:px-8 py-8 md:py-12">
     
-    <div class="flex justify-between items-center mb-8">
-        <h1 class="text-2xl font-bold text-white">Manage <span class="text-primary">{{ media_type|upper }}</span></h1>
-        <div class="flex bg-surface rounded-lg p-1 border border-white/10">
-            <a href="?media_type=movie" class="px-5 py-2 rounded text-xs font-bold transition-all {% if media_type == 'movie' %}bg-white text-black{% else %}text-text-muted hover:text-white{% endif %}">MOVIES</a>
-            <a href="?media_type=tv" class="px-5 py-2 rounded text-xs font-bold transition-all {% if media_type == 'tv' %}bg-white text-black{% else %}text-text-muted hover:text-white{% endif %}">TV SHOWS</a>
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+        <h1 class="text-2xl font-serif font-bold">Manage: <span class="bg-accent px-2 border border-black">{{ media_type|upper }}</span></h1>
+        
+        <div class="flex bg-white border-2 border-black p-1">
+            <a href="?media_type=movie" class="px-4 py-1 text-xs font-bold {% if media_type == 'movie' %}bg-black text-white{% else %}hover:bg-gray-100{% endif %}">MOVIES</a>
+            <a href="?media_type=tv" class="px-4 py-1 text-xs font-bold {% if media_type == 'tv' %}bg-black text-white{% else %}hover:bg-gray-100{% endif %}">TV SHOWS</a>
         </div>
     </div>
 
-    <input type="text" id="search-input" placeholder="Filter by title..." 
-           class="w-full max-w-md bg-surface border border-white/10 rounded-lg px-4 py-3 text-white focus:border-primary/50 focus:outline-none mb-10 transition-colors">
+    <input type="text" id="search-input" placeholder="Filter titles..." 
+           class="w-full max-w-md bg-white border-2 border-black p-3 mb-8 font-bold focus:outline-none shadow-brutal-sm focus:shadow-brutal transition-all text-sm rounded-none">
 
-    <div id="media-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6"></div>
-    <div id="pagination" class="flex justify-center gap-2 mt-12 text-sm font-bold text-text-muted"></div>
+    <div id="media-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4"></div>
+    
+    <div id="pagination" class="flex justify-center gap-2 mt-12 text-xs font-bold"></div>
 </div>
 
 <script>
@@ -27,27 +29,33 @@
 
     async function loadMedia(page = 1, search = '') {
         const grid = document.getElementById('media-grid');
-        grid.innerHTML = '<div class="col-span-full text-center py-20 text-text-muted">Loading data...</div>';
+        grid.innerHTML = '<div class="col-span-full text-center py-10 font-bold text-gray-400">Loading index...</div>';
         
         try {
             const res = await fetch(`/api/media/list?media_type=${mediaType}&page=${page}&search=${search}`);
             const data = await res.json();
             const items = mediaType === 'movie' ? data.movies : data.tv_shows;
             
+            if(items.length === 0) {
+                 grid.innerHTML = '<div class="col-span-full text-center py-10 text-gray-400">No content found.</div>';
+                 return;
+            }
+
             grid.innerHTML = items.map(item => `
-                <div class="bg-surface rounded-lg overflow-hidden border border-white/5 group">
-                    <div class="aspect-[2/3] relative">
-                        <img src="${item.poster || ''}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3 p-4">
+                <div class="bg-white border-2 border-black p-1 group relative">
+                    <div class="aspect-[2/3] relative overflow-hidden bg-gray-100">
+                        <img src="${item.poster || ''}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all">
+                        
+                        <div class="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
                             <a href="/admin/media/edit?tmdb_id=${item.tmdb_id}&db_index=${item.db_index}&media_type=${mediaType}" 
-                               class="bg-white text-black px-4 py-2 rounded text-xs font-bold w-full text-center hover:bg-gray-200">EDIT</a>
+                               class="bg-white text-black border-2 border-black px-3 py-1 text-[10px] font-bold uppercase w-full text-center hover:bg-accent">Edit</a>
                             <button onclick="deleteMedia(${item.tmdb_id}, ${item.db_index}, '${item.title.replace(/'/g, "\\'")}')" 
-                                    class="bg-red-500/20 text-red-500 border border-red-500/50 px-4 py-2 rounded text-xs font-bold w-full hover:bg-red-500 hover:text-white transition-colors">DELETE</button>
+                                    class="bg-red-500 text-white border-2 border-white px-3 py-1 text-[10px] font-bold uppercase w-full hover:bg-red-600">Delete</button>
                         </div>
                     </div>
-                    <div class="p-3">
-                        <h3 class="text-sm font-bold text-white truncate">${item.title}</h3>
-                        <p class="text-xs text-text-muted mt-1 font-mono">${item.release_year}</p>
+                    <div class="p-2 text-center">
+                        <h3 class="text-xs font-bold truncate">${item.title}</h3>
+                        <p class="text-[10px] text-gray-500 font-mono">${item.release_year}</p>
                     </div>
                 </div>
             `).join('');
@@ -55,17 +63,15 @@
             const pag = document.getElementById('pagination');
             if (data.total_pages > 1) {
                 let html = '';
-                if (page > 1) html += `<button onclick="loadMedia(${page-1}, '${currentSearch}')" class="px-3 py-1 bg-surface rounded hover:bg-white/10 mr-2">Prev</button>`;
-                html += `<span class="px-3 py-1 text-white border border-white/10 rounded bg-white/5">${page} / ${data.total_pages}</span>`;
-                if (page < data.total_pages) html += `<button onclick="loadMedia(${page+1}, '${currentSearch}')" class="px-3 py-1 bg-surface rounded hover:bg-white/10 ml-2">Next</button>`;
+                if (page > 1) html += `<button onclick="loadMedia(${page-1}, '${currentSearch}')" class="px-3 py-1 border-2 border-black hover:bg-black hover:text-white">Prev</button>`;
+                html += `<span class="px-3 py-1 border-2 border-black bg-accent">${page}</span>`;
+                if (page < data.total_pages) html += `<button onclick="loadMedia(${page+1}, '${currentSearch}')" class="px-3 py-1 border-2 border-black hover:bg-black hover:text-white">Next</button>`;
                 pag.innerHTML = html;
             } else {
                 pag.innerHTML = '';
             }
 
-        } catch (e) {
-            console.error(e);
-        }
+        } catch (e) { console.error(e); }
     }
 
     async function deleteMedia(id, index, title) {
