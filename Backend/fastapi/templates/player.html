@@ -1,63 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="pt-24 px-8 md:px-16 min-h-screen">
-    <div class="flex flex-col lg:flex-row gap-12">
-        <div class="w-full lg:w-1/4">
-            <img src="{{ media.poster }}" class="rounded-lg shadow-2xl mb-6 w-full">
-            <h1 class="text-4xl font-bold mb-2">{{ media.title }}</h1>
-            <div class="flex gap-4 text-green-500 font-bold mb-4">
-                <span>{{ media.release_year }}</span>
-                <span>⭐ {{ media.rating }}</span>
-            </div>
-            <p class="text-gray-400 text-sm leading-relaxed mb-6">{{ media.description }}</p>
-            <div class="flex flex-wrap gap-2">
-                {% for g in media.genres %}<span class="bg-zinc-800 px-3 py-1 rounded-full text-xs">{{ g }}</span>{% endfor %}
-            </div>
-        </div>
-
-        <div class="w-full lg:w-3/4">
-            <div class="bg-zinc-900/50 p-8 rounded-xl border border-white/5">
-                {% if m_type == 'movie' %}
-                    <h2 class="text-2xl font-bold mb-6">Select Quality</h2>
-                    <div class="space-y-4">
-                        {% for s in streams %}
-                        <div class="flex items-center justify-between p-5 bg-black/40 rounded border border-white/5 hover:border-white/20 transition">
-                            <span class="font-medium">{{ s.label }}</span>
-                            <div class="flex gap-3">
-                                <a href="{{ s.url }}" class="bg-white text-black px-6 py-2 rounded font-bold text-sm">▶ Play</a>
-                                <a href="{{ s.url }}" download class="bg-zinc-700 text-white px-6 py-2 rounded font-bold text-sm">⬇ Download</a>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <h2 class="text-2xl font-bold mb-6">Episodes</h2>
-                    <div class="space-y-4">
-                        {% for season in media.seasons | sort(attribute='season_number') %}
-                        <details class="group bg-zinc-800 rounded-lg overflow-hidden">
-                            <summary class="flex items-center justify-between p-4 cursor-pointer list-none font-bold select-none hover:bg-zinc-700 transition">
-                                Season {{ season.season_number }}
-                                <i class="fas fa-chevron-down transition-transform group-open:rotate-180"></i>
-                            </summary>
-                            <div class="p-4 space-y-3 bg-black/20 divide-y divide-white/5">
-                                {% for ep in season.episodes | sort(attribute='episode_number') %}
-                                <div class="flex flex-col md:flex-row justify-between py-4 gap-4">
-                                    <div><span class="text-red-600 font-bold">EP {{ ep.episode_number }}</span>: {{ ep.title }}</div>
-                                    <div class="flex flex-wrap gap-2">
-                                        {% for q in ep.telegram %}
-                                        <a href="{{ base }}/dl/{{ q.id }}/video.mkv" class="px-3 py-1 bg-zinc-700 hover:bg-white hover:text-black rounded text-xs transition">
-                                            {{ q.quality }} ({{ q.size }})
-                                        </a>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </details>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
+<div class="w-full max-w-6xl mx-auto px-4 py-8">
+    <div class="bg-black aspect-video w-full mb-6 border-2 border-black shadow-brutal-lg flex items-center justify-center text-white">
+        <p class="font-mono text-sm">Initiating Stream...</p>
+    </div>
+    
+    <div class="flex flex-col md:flex-row gap-6 items-start">
+        <img src="{{ media.poster }}" class="w-24 border-2 border-black hidden md:block">
+        <div>
+            <h1 class="font-serif text-2xl font-bold mb-2">{{ media.title }}</h1>
+            <p class="text-sm max-w-2xl leading-relaxed">{{ media.description }}</p>
         </div>
     </div>
 </div>
