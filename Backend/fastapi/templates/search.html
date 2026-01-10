@@ -1,54 +1,63 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="w-full max-w-7xl mx-auto px-6 py-20">
+<div class="w-full max-w-[1800px] mx-auto px-6 md:px-12 py-12">
     
-    <div class="mb-10">
-        <form action="/search" method="get" class="relative max-w-xl">
-            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-text-muted"></i>
-            <input type="text" name="q" value="{{ query }}" 
-                   class="w-full bg-surface border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white focus:outline-none focus:border-primary transition-colors"
-                   placeholder="Refine search...">
+    <div class="flex flex-col md:flex-row gap-6 justify-between items-end mb-12 pb-8 border-b-2 border-border">
+        <div>
+            <h1 class="font-serif text-5xl font-bold mb-2">Search Results</h1>
+            <p class="font-medium text-gray-500">Query: "<span class="text-black decoration-2 underline underline-offset-4">{{ query }}</span>"</p>
+        </div>
+        
+        <form action="/search" method="get" class="w-full md:w-auto min-w-[300px]">
+            <div class="relative">
+                <input type="text" name="q" value="{{ query }}" 
+                       class="w-full bg-surface border-2 border-black px-4 py-3 font-bold focus:outline-none shadow-brutal focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-none transition-all"
+                       placeholder="Refine search...">
+                <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
         </form>
     </div>
 
     {% if query %}
-        <div class="flex items-center gap-4 mb-8">
-            <h2 class="text-2xl font-bold text-white">Results</h2>
-            <span class="px-2 py-0.5 bg-white/10 rounded text-xs font-bold text-text-muted">{{ results|length }} FOUND</span>
-        </div>
-
         {% if results %}
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6 gap-x-6 gap-y-10">
             {% for media in results %}
             <a href="/view/{{ media.media_type }}/{{ media.tmdb_id }}?db_index={{ media.db_index }}" 
-               class="group block relative bg-surface rounded-xl overflow-hidden hover:ring-2 hover:ring-primary transition-all duration-300 hover:-translate-y-2 shadow-lg">
+               class="group block relative bg-surface border-2 border-black p-2 shadow-brutal hover:shadow-brutal-hover hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200">
                 
-                <div class="aspect-[2/3] w-full relative">
-                    <img src="{{ media.poster }}" alt="{{ media.title }}" class="w-full h-full object-cover" loading="lazy">
+                <div class="aspect-[2/3] w-full relative overflow-hidden bg-gray-100 border border-black/10">
+                    <img src="{{ media.poster }}" alt="{{ media.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
                     
-                    <div class="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white shadow-glow">
-                            <i class="fa-solid fa-play"></i>
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
+                        <div class="bg-white border-2 border-black px-4 py-2 font-bold text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all shadow-brutal">
+                            View
                         </div>
                     </div>
                 </div>
 
-                <div class="p-4">
-                    <h3 class="font-bold text-white text-sm leading-tight mb-2 truncate">{{ media.title }}</h3>
-                    <div class="flex justify-between items-center text-xs text-text-muted">
+                <div class="pt-4 pb-2 px-1">
+                    <h3 class="font-bold text-lg leading-tight mb-2 line-clamp-1 group-hover:underline decoration-2 underline-offset-2">{{ media.title }}</h3>
+                    <div class="flex justify-between items-center text-xs font-bold uppercase tracking-wider text-gray-500">
                         <span>{{ media.release_year }}</span>
-                        <span class="border border-white/20 px-1 rounded uppercase">{{ media.media_type }}</span>
+                        <span class="bg-gray-100 border border-black px-1.5 py-0.5 text-black">{{ media.media_type }}</span>
                     </div>
                 </div>
             </a>
             {% endfor %}
         </div>
         {% else %}
-        <div class="flex flex-col items-center justify-center py-32 text-text-muted">
-            <i class="fa-regular fa-folder-open text-6xl mb-4 opacity-50"></i>
-            <p class="text-lg">No matches found for "{{ query }}"</p>
-            <a href="/" class="mt-4 text-primary hover:underline">Try another search</a>
+        <div class="flex flex-col items-center justify-center py-20 bg-white border-2 border-black shadow-brutal">
+            <div class="w-20 h-20 bg-gray-100 border-2 border-black flex items-center justify-center text-3xl mb-6">
+                <i class="fa-solid fa-ghost"></i>
+            </div>
+            <h3 class="font-serif text-3xl font-bold mb-2">No results found</h3>
+            <p class="text-gray-500 mb-8 max-w-md text-center">We couldn't find anything matching your query in the index.</p>
+            <a href="/" class="px-6 py-3 bg-black text-white font-bold uppercase tracking-widest border-2 border-transparent hover:bg-accent hover:text-black hover:border-black transition-all">
+                Clear Search
+            </a>
         </div>
         {% endif %}
 
