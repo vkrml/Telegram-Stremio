@@ -1,113 +1,122 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Links4U Search{% endblock %}</title>
+    <title>{% block title %}Links4U Archive{% endblock %}</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['DM Sans', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
                     },
                     colors: {
-                        background: '#0a0a0a', /* Deep Charcoal/Black */
-                        surface: '#141414',    /* Card Surface */
-                        'surface-hover': '#262626',
-                        primary: '#e50914',    /* OTT Red Accent */
-                        text: '#ffffff',
-                        'text-muted': '#a3a3a3',
+                        background: '#f0fdf4', /* Light Green Background */
+                        surface: '#ffffff',    /* White Cards */
+                        border: '#18181b',     /* Nearly Black Borders */
+                        primary: '#18181b',    /* Dark Text */
+                        accent: '#dcfce7',     /* Green Accent */
                     },
-                    animation: {
-                        'fade-in': 'fadeIn 0.5s ease-out',
+                    boxShadow: {
+                        'brutal': '4px 4px 0px 0px #18181b',
+                        'brutal-hover': '2px 2px 0px 0px #18181b',
+                        'brutal-lg': '8px 8px 0px 0px #18181b',
                     },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(10px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        }
+                    borderWidth: {
+                        '3': '3px',
                     }
                 }
             }
         }
     </script>
     <style>
-        body { background-color: #0a0a0a; color: #ffffff; }
-        /* Hide Scrollbar but keep functionality */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0a0a0a; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #e50914; }
+        body { background-color: #f0fdf4; color: #18181b; }
         
-        .glass { background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(20px); }
-        .text-glow { text-shadow: 0 0 20px rgba(229, 9, 20, 0.3); }
+        /* Smooth Fade In */
+        .fade-enter { opacity: 0; transform: translateY(10px); animation: enter 0.4s ease-out forwards; }
+        @keyframes enter { to { opacity: 1; transform: translateY(0); } }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f0fdf4; border-left: 2px solid #18181b; }
+        ::-webkit-scrollbar-thumb { background: #18181b; }
+        ::-webkit-scrollbar-thumb:hover { background: #4ade80; }
     </style>
 </head>
-<body class="flex flex-col min-h-screen selection:bg-primary selection:text-white">
+<body class="flex flex-col min-h-screen selection:bg-black selection:text-white">
 
-    <nav class="fixed top-0 w-full z-50 py-6 px-8 flex justify-between items-center bg-gradient-to-b from-black/80 to-transparent">
-        <a href="/" class="text-2xl font-black tracking-tighter text-white hover:text-primary transition-colors">
-            LINKS4U
+    <nav class="w-full z-40 py-5 px-6 md:px-12 flex justify-between items-center border-b-2 border-border bg-background sticky top-0">
+        <a href="/" class="flex items-center gap-2 group">
+            <div class="w-8 h-8 bg-black text-white flex items-center justify-center font-serif font-bold text-xl border-2 border-transparent group-hover:bg-white group-hover:text-black group-hover:border-black transition-all">L</div>
+            <span class="font-serif text-2xl font-bold tracking-tight">Links4U<span class="text-sm font-sans font-normal ml-1 opacity-60">Archive</span></span>
         </a>
 
         <div class="flex items-center gap-6">
-            <button onclick="toggleInfo()" class="text-sm font-semibold text-text-muted hover:text-white transition-colors uppercase tracking-widest">
-                Info
+            <button onclick="toggleInfo()" class="font-bold text-sm uppercase tracking-widest hover:underline decoration-2 underline-offset-4">
+                Documentation
             </button>
             {% if request.session.get("authenticated") %}
-                <a href="/admin" class="text-sm font-semibold text-text-muted hover:text-white transition-colors uppercase tracking-widest">Admin</a>
+                <a href="/admin" class="font-bold text-sm uppercase tracking-widest bg-black text-white px-4 py-2 hover:bg-white hover:text-black border-2 border-transparent hover:border-black transition-all">Admin</a>
             {% else %}
-                <a href="/login" class="text-sm font-semibold text-text-muted hover:text-white transition-colors uppercase tracking-widest">Login</a>
+                <a href="/login" class="font-bold text-sm uppercase tracking-widest hover:underline decoration-2 underline-offset-4">Login</a>
             {% endif %}
         </div>
     </nav>
 
-    <main class="flex-grow flex flex-col justify-center relative z-10 animate-fade-in">
+    <main class="flex-grow flex flex-col relative z-10 fade-enter">
         {% block content %}{% endblock %}
     </main>
 
-    <div id="info-modal" class="fixed inset-0 z-[100] hidden bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
-        <div class="max-w-2xl w-full bg-surface border border-white/10 rounded-2xl p-10 relative">
-            <button onclick="toggleInfo()" class="absolute top-6 right-6 text-white/50 hover:text-white">
-                <i class="fa-solid fa-xmark text-2xl"></i>
+    <div id="info-modal" class="fixed inset-0 z-[100] hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="max-w-2xl w-full bg-surface border-3 border-border shadow-brutal-lg p-8 relative">
+            <button onclick="toggleInfo()" class="absolute top-6 right-6 w-8 h-8 flex items-center justify-center hover:bg-black hover:text-white border-2 border-transparent hover:border-black transition-all">
+                <i class="fa-solid fa-xmark text-xl"></i>
             </button>
             
-            <h2 class="text-3xl font-bold mb-2">Platform Guide</h2>
-            <p class="text-text-muted mb-8">How to use the Search Engine</p>
+            <h2 class="font-serif text-4xl font-bold mb-2">Platform Guide</h2>
+            <div class="h-1 w-20 bg-black mb-6"></div>
+            
+            <p class="mb-8 font-medium text-lg leading-relaxed">This archive operates as a search-only indexing engine. Content is hidden by default to maintain a minimal footprint.</p>
             
             <div class="space-y-6">
-                <div class="flex gap-4">
-                    <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-primary font-bold">1</div>
+                <div class="flex gap-5 items-start">
+                    <div class="w-12 h-12 shrink-0 border-2 border-border bg-accent flex items-center justify-center font-bold text-xl shadow-brutal">1</div>
                     <div>
-                        <h4 class="font-bold">Search First</h4>
-                        <p class="text-sm text-text-muted">This is a search-only platform. Enter a Movie or TV Show title to query the database.</p>
+                        <h4 class="font-bold text-lg uppercase tracking-wide mb-1">Query the Index</h4>
+                        <p class="text-gray-600">Enter a specific Movie or TV Show title on the homepage. The system uses strict matching against the archive.</p>
                     </div>
                 </div>
-                <div class="flex gap-4">
-                    <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-primary font-bold">2</div>
+                <div class="flex gap-5 items-start">
+                    <div class="w-12 h-12 shrink-0 border-2 border-border bg-white flex items-center justify-center font-bold text-xl shadow-brutal">2</div>
                     <div>
-                        <h4 class="font-bold">Select Content</h4>
-                        <p class="text-sm text-text-muted">Click on a poster to view details, available qualities, and episodes.</p>
+                        <h4 class="font-bold text-lg uppercase tracking-wide mb-1">Browse Cards</h4>
+                        <p class="text-gray-600">Results appear in a structured grid. Click the poster card to access the file directory.</p>
                     </div>
                 </div>
-                <div class="flex gap-4">
-                    <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-primary font-bold">3</div>
+                <div class="flex gap-5 items-start">
+                    <div class="w-12 h-12 shrink-0 border-2 border-border bg-black text-white flex items-center justify-center font-bold text-xl shadow-brutal">3</div>
                     <div>
-                        <h4 class="font-bold">Direct Stream</h4>
-                        <p class="text-sm text-text-muted">Click "Play" to stream immediately in your browser using the native network player.</p>
+                        <h4 class="font-bold text-lg uppercase tracking-wide mb-1">Stream or DL</h4>
+                        <p class="text-gray-600">Select your preferred quality to stream directly in-browser or download the file.</p>
                     </div>
                 </div>
+            </div>
+            
+            <div class="mt-8 pt-6 border-t-2 border-gray-100 flex justify-end">
+                <button onclick="toggleInfo()" class="px-6 py-2 border-2 border-border font-bold uppercase hover:bg-black hover:text-white transition-all shadow-brutal hover:shadow-brutal-hover hover:translate-x-[2px] hover:translate-y-[2px]">
+                    Close Guide
+                </button>
             </div>
         </div>
     </div>
