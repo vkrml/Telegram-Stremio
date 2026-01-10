@@ -3,36 +3,36 @@
 {% block title %}Access Control{% endblock %}
 
 {% block content %}
-<div class="flex-grow flex items-center justify-center p-6">
-    <div class="w-full max-w-md bg-white border-3 border-black p-10 shadow-brutal-lg relative">
+<div class="flex-grow flex items-center justify-center p-6 bg-background">
+    <div class="w-full max-w-md bg-white border-2 border-black p-8 shadow-brutal-lg relative">
         
-        <div class="mb-10 text-center">
-            <div class="w-12 h-12 bg-black text-white flex items-center justify-center font-serif font-bold text-2xl mx-auto mb-4">L</div>
-            <h1 class="font-serif text-3xl font-bold tracking-tight mb-2">System Login</h1>
-            <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Authorized Personnel Only</p>
+        <div class="mb-8 text-center">
+            <div class="w-10 h-10 bg-black text-white flex items-center justify-center font-serif font-bold text-xl mx-auto mb-3">L</div>
+            <h1 class="font-serif text-2xl font-bold tracking-tight mb-1">System Login</h1>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Authorized Personnel Only</p>
         </div>
         
         {% if error %}
-        <div class="bg-red-50 border-2 border-red-500 text-red-600 px-4 py-3 font-bold text-sm text-center mb-8">
+        <div class="bg-red-50 border border-red-500 text-red-600 px-3 py-2 font-bold text-xs text-center mb-6">
             {{ error }}
         </div>
         {% endif %}
         
-        <form method="post" class="space-y-6">
+        <form method="post" class="space-y-5">
             <div>
-                <label class="block text-xs font-bold uppercase tracking-widest mb-2">Username</label>
+                <label class="block text-[10px] font-bold uppercase tracking-widest mb-1">Username</label>
                 <input type="text" name="username" required 
-                       class="w-full bg-background border-2 border-black px-4 py-3 font-bold focus:outline-none focus:shadow-brutal transition-all">
+                       class="w-full bg-white border-2 border-black px-4 py-2 font-bold focus:outline-none focus:bg-accent transition-all text-sm rounded-none">
             </div>
             
             <div>
-                <label class="block text-xs font-bold uppercase tracking-widest mb-2">Password</label>
+                <label class="block text-[10px] font-bold uppercase tracking-widest mb-1">Password</label>
                 <input type="password" name="password" required 
-                       class="w-full bg-background border-2 border-black px-4 py-3 font-bold focus:outline-none focus:shadow-brutal transition-all">
+                       class="w-full bg-white border-2 border-black px-4 py-2 font-bold focus:outline-none focus:bg-accent transition-all text-sm rounded-none">
             </div>
             
-            <button type="submit" class="w-full bg-black text-white font-bold uppercase tracking-widest py-4 border-2 border-transparent hover:bg-accent hover:text-black hover:border-black shadow-brutal hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px] transition-all">
-                Authenticate
+            <button type="submit" class="w-full bg-black text-white font-bold uppercase text-xs tracking-widest py-3 border-2 border-transparent hover:bg-white hover:text-black hover:border-black shadow-brutal hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
+                Enter Console
             </button>
         </form>
     </div>
