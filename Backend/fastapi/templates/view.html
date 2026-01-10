@@ -1,24 +1,24 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12">
+<div class="w-full max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
     
     <div class="flex flex-col lg:flex-row gap-8 mb-12">
         
-        <div class="w-full max-w-[300px] mx-auto lg:mx-0 lg:w-1/3 flex-shrink-0">
+        <div class="w-full max-w-[280px] mx-auto lg:mx-0 lg:w-1/3 flex-shrink-0">
             <div class="bg-white p-2 border-2 border-black shadow-brutal sticky top-24">
                 <img src="{{ media.poster }}" alt="Poster" class="w-full h-auto object-cover border border-black/10">
                 
-                <div class="grid grid-cols-2 gap-2 mt-4 text-center">
+                <div class="grid grid-cols-2 gap-2 mt-2 text-center">
                     <div class="bg-accent border-2 border-black p-2">
                         <div class="text-[10px] font-bold uppercase tracking-widest text-gray-600">Rating</div>
-                        <div class="font-black text-xl flex items-center justify-center gap-1">
+                        <div class="font-black text-lg flex items-center justify-center gap-1">
                             <i class="fa-solid fa-star text-xs"></i> {{ media.rating }}
                         </div>
                     </div>
                     <div class="bg-white border-2 border-black p-2">
                         <div class="text-[10px] font-bold uppercase tracking-widest text-gray-600">Year</div>
-                        <div class="font-black text-xl">{{ media.release_year }}</div>
+                        <div class="font-black text-lg">{{ media.release_year }}</div>
                     </div>
                 </div>
             </div>
@@ -28,9 +28,9 @@
             
             <div>
                 <div class="flex flex-wrap gap-2 mb-3">
-                    <span class="bg-black text-white px-2 py-1 text-xs font-bold uppercase tracking-wider">{{ media.media_type }}</span>
+                    <span class="bg-black text-white px-2 py-1 text-[10px] font-bold uppercase tracking-wider">{{ media.media_type }}</span>
                     {% for genre in media.genres %}
-                    <span class="border border-black px-2 py-1 text-xs font-bold uppercase tracking-wider bg-white">{{ genre }}</span>
+                    <span class="border border-black px-2 py-1 text-[10px] font-bold uppercase tracking-wider bg-white">{{ genre }}</span>
                     {% endfor %}
                 </div>
                 <h1 class="font-serif text-4xl md:text-6xl font-black leading-[0.9] text-black mb-4 break-words">
@@ -39,18 +39,18 @@
             </div>
 
             <div class="bg-white border-2 border-black p-5 shadow-brutal-sm">
-                <h3 class="font-bold text-sm uppercase tracking-widest mb-2 text-gray-500">Synopsis</h3>
-                <p class="text-gray-800 leading-relaxed text-sm md:text-base font-medium">
+                <h3 class="font-bold text-xs uppercase tracking-widest mb-2 text-gray-400">Synopsis</h3>
+                <p class="text-gray-900 leading-relaxed text-sm md:text-base font-medium">
                     {{ media.description }}
                 </p>
             </div>
 
             {% if media.cast %}
             <div>
-                <h3 class="font-bold text-xs uppercase tracking-widest mb-2 text-gray-500">Starring</h3>
+                <h3 class="font-bold text-xs uppercase tracking-widest mb-2 text-gray-400">Cast</h3>
                 <div class="flex flex-wrap gap-2">
                     {% for actor in media.cast %}
-                    <span class="bg-gray-100 border border-black px-3 py-1 text-sm font-bold">{{ actor }}</span>
+                    <span class="bg-gray-100 border border-black px-3 py-1 text-xs font-bold">{{ actor }}</span>
                     {% endfor %}
                 </div>
             </div>
@@ -61,8 +61,8 @@
 
     <div class="border-t-4 border-black pt-8">
         <h2 class="font-serif text-3xl font-black mb-6 flex items-center gap-3">
-            <i class="fa-solid fa-folder-open"></i>
-            {% if media_type == 'movie' %}Available Files{% else %}Season Index{% endif %}
+            <i class="fa-regular fa-folder-open"></i>
+            {% if media_type == 'movie' %}Files{% else %}Episodes{% endif %}
         </h2>
 
         {% if media_type == 'movie' %}
@@ -76,16 +76,16 @@
                             <span class="bg-gray-100 border border-black px-2 py-0.5 text-xs font-mono">{{ file.size }}</span>
                         </div>
 
-                        <p class="font-mono text-xs md:text-sm text-gray-700 break-words whitespace-normal bg-gray-50 p-2 border border-black/10 mb-4">
+                        <div class="break-filename font-mono text-xs md:text-sm text-gray-700 bg-gray-50 p-2 border border-black/10 mb-4 select-all">
                             {{ file.name }}
-                        </p>
+                        </div>
 
                         <div class="grid grid-cols-2 gap-3">
-                            <a href="{{ base_url }}/dl/{{ file.id }}/video.mkv" class="bg-black text-white py-3 text-center font-bold text-sm uppercase hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
+                            <a href="{{ base_url }}/dl/{{ file.id }}/video.mkv" class="bg-black text-white py-3 text-center font-bold text-xs uppercase hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 border-2 border-transparent">
                                 <i class="fa-solid fa-play"></i> Stream
                             </a>
-                            <a href="{{ base_url }}/dl/{{ file.id }}/video.mkv" download class="bg-white border-2 border-black text-black py-3 text-center font-bold text-sm uppercase hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-download"></i> Save
+                            <a href="{{ base_url }}/dl/{{ file.id }}/video.mkv" download class="bg-white border-2 border-black text-black py-3 text-center font-bold text-xs uppercase hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-download"></i> DL
                             </a>
                         </div>
                     </div>
@@ -100,10 +100,10 @@
                 {% for season in media.seasons|sort(attribute='season_number') %}
                 <details class="group bg-white border-2 border-black shadow-brutal-sm open:shadow-none open:translate-x-[2px] open:translate-y-[2px] transition-all">
                     
-                    <summary class="flex items-center justify-between p-4 md:p-6 cursor-pointer select-none bg-gray-50 hover:bg-accent transition-colors">
-                        <span class="font-serif text-xl md:text-2xl font-black">Season {{ season.season_number }}</span>
+                    <summary class="flex items-center justify-between p-4 cursor-pointer select-none bg-gray-50 hover:bg-accent transition-colors">
+                        <span class="font-serif text-xl font-black">Season {{ season.season_number }}</span>
                         <div class="w-8 h-8 border-2 border-black bg-white flex items-center justify-center group-open:rotate-180 transition-transform">
-                            <i class="fa-solid fa-chevron-down"></i>
+                            <i class="fa-solid fa-chevron-down text-sm"></i>
                         </div>
                     </summary>
 
@@ -113,38 +113,37 @@
                             
                             <div class="flex flex-col md:flex-row gap-4 mb-6">
                                 {% if episode.episode_backdrop %}
-                                <img src="{{ episode.episode_backdrop }}" class="w-full md:w-48 h-32 object-cover border-2 border-black shadow-sm flex-shrink-0">
+                                <div class="w-full md:w-48 h-32 flex-shrink-0 border-2 border-black shadow-sm overflow-hidden">
+                                    <img src="{{ episode.episode_backdrop }}" class="w-full h-full object-cover">
+                                </div>
                                 {% endif %}
                                 <div>
                                     <div class="flex items-center gap-2 mb-1">
-                                        <span class="bg-black text-white text-xs px-2 py-0.5 font-bold">Ep {{ episode.episode_number }}</span>
-                                        <span class="text-xs text-gray-500 font-bold uppercase">{{ episode.released }}</span>
+                                        <span class="bg-black text-white text-[10px] px-2 py-0.5 font-bold uppercase">Ep {{ episode.episode_number }}</span>
+                                        <span class="text-[10px] text-gray-500 font-bold uppercase">{{ episode.released }}</span>
                                     </div>
-                                    <h4 class="font-bold text-lg md:text-xl leading-tight mb-2">{{ episode.title }}</h4>
-                                    <p class="text-sm text-gray-600 leading-relaxed">{{ episode.overview }}</p>
+                                    <h4 class="font-bold text-lg leading-tight mb-2">{{ episode.title }}</h4>
+                                    <p class="text-xs md:text-sm text-gray-600 leading-relaxed max-w-2xl">{{ episode.overview }}</p>
                                 </div>
                             </div>
 
                             <div class="space-y-3 pl-0 md:pl-4 md:border-l-4 md:border-gray-200">
                                 {% if episode.telegram %}
-                                    <p class="text-xs font-bold uppercase text-gray-400 mb-2">Available Qualities:</p>
                                     {% for file in episode.telegram %}
                                     <div class="bg-gray-50 border border-black p-3 flex flex-col gap-3">
                                         
-                                        <div class="flex flex-wrap items-center justify-between gap-2">
-                                            <div class="flex items-center gap-2">
-                                                <span class="bg-accent border border-black px-2 text-xs font-black">{{ file.quality }}</span>
-                                                <span class="font-mono text-xs text-gray-500">{{ file.size }}</span>
-                                            </div>
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <span class="bg-accent border border-black px-2 text-[10px] font-black uppercase">{{ file.quality }}</span>
+                                            <span class="font-mono text-[10px] text-gray-500">{{ file.size }}</span>
                                         </div>
 
-                                        <div class="font-mono text-[10px] md:text-xs text-gray-600 break-words whitespace-normal">
+                                        <div class="break-filename font-mono text-[10px] md:text-xs text-gray-600 select-all">
                                             {{ file.name }}
                                         </div>
 
                                         <div class="flex gap-2">
-                                            <a href="{{ base_url }}/dl/{{ file.id }}/video.mkv" class="flex-1 bg-black text-white py-2 text-xs font-bold uppercase text-center hover:bg-accent hover:text-black hover:border-black border border-transparent transition-all">
-                                                Play
+                                            <a href="{{ base_url }}/dl/{{ file.id }}/video.mkv" class="flex-1 bg-black text-white py-2 text-[10px] font-bold uppercase text-center hover:bg-accent hover:text-black hover:border-black border border-transparent transition-all">
+                                                Stream
                                             </a>
                                             <a href="{{ base_url }}/dl/{{ file.id }}/video.mkv" download class="w-10 flex items-center justify-center border border-black bg-white hover:bg-gray-100">
                                                 <i class="fa-solid fa-download text-xs"></i>
@@ -153,7 +152,7 @@
                                     </div>
                                     {% endfor %}
                                 {% else %}
-                                    <div class="text-xs text-red-500 font-bold border border-red-200 bg-red-50 p-2">No links available yet.</div>
+                                    <div class="text-xs text-red-500 font-bold border border-red-200 bg-red-50 p-2">No links available.</div>
                                 {% endif %}
                             </div>
 
