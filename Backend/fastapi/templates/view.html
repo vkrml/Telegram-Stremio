@@ -1,135 +1,132 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="fixed inset-0 z-0">
-    <div class="absolute inset-0 bg-cover bg-center opacity-30 blur-3xl scale-110" style="background-image: url('{{ media.backdrop or media.poster }}');"></div>
-    <div class="absolute inset-0 bg-background/90"></div>
-</div>
-
-<div class="relative z-10 w-full max-w-7xl mx-auto px-6 py-20">
+<div class="w-full max-w-[1600px] mx-auto px-6 md:px-12 py-12">
     
     <div class="grid lg:grid-cols-12 gap-12">
         
         <div class="lg:col-span-4 xl:col-span-3">
-            <div class="rounded-xl overflow-hidden shadow-2xl border border-white/10 mb-6">
-                <img src="{{ media.poster }}" class="w-full h-auto object-cover">
-            </div>
-            
-            <div class="bg-surface rounded-xl p-6 border border-white/5 space-y-4">
-                <div class="flex justify-between items-center">
-                    <span class="text-text-muted text-sm font-bold uppercase">Rating</span>
-                    <span class="text-primary font-bold text-lg"><i class="fa-solid fa-star mr-2"></i>{{ media.rating }}</span>
+            <div class="bg-white p-2 border-3 border-black shadow-brutal-lg mb-8 sticky top-24">
+                <div class="aspect-[2/3] w-full relative overflow-hidden border border-black/10 mb-4">
+                    <img src="{{ media.poster }}" class="w-full h-full object-cover">
                 </div>
-                <div class="w-full h-[1px] bg-white/5"></div>
-                <div class="flex justify-between items-center">
-                    <span class="text-text-muted text-sm font-bold uppercase">Year</span>
-                    <span class="text-white font-bold">{{ media.release_year }}</span>
-                </div>
-                <div class="w-full h-[1px] bg-white/5"></div>
-                <div class="flex justify-between items-center">
-                    <span class="text-text-muted text-sm font-bold uppercase">Duration</span>
-                    <span class="text-white font-bold">{{ media.runtime }}</span>
+                
+                <div class="space-y-0 divide-y-2 divide-gray-100">
+                    <div class="flex justify-between items-center py-3">
+                        <span class="font-bold text-xs uppercase tracking-widest text-gray-400">Rating</span>
+                        <span class="font-bold text-lg"><i class="fa-solid fa-star text-black mr-2"></i>{{ media.rating }}</span>
+                    </div>
+                    <div class="flex justify-between items-center py-3">
+                        <span class="font-bold text-xs uppercase tracking-widest text-gray-400">Year</span>
+                        <span class="font-bold">{{ media.release_year }}</span>
+                    </div>
+                    <div class="flex justify-between items-center py-3">
+                        <span class="font-bold text-xs uppercase tracking-widest text-gray-400">Runtime</span>
+                        <span class="font-bold">{{ media.runtime }}</span>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="lg:col-span-8 xl:col-span-9">
             
-            <h1 class="text-5xl md:text-6xl font-black text-white mb-6 leading-tight">{{ media.title }}</h1>
-            
-            <div class="flex flex-wrap gap-2 mb-8">
-                {% for genre in media.genres %}
-                <span class="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs font-bold text-gray-300">
-                    {{ genre }}
-                </span>
-                {% endfor %}
-            </div>
-
-            <p class="text-lg text-gray-300 leading-relaxed mb-10 font-light border-l-4 border-primary pl-6">
-                {{ media.description }}
-            </p>
-
-            {% if media.cast %}
             <div class="mb-12">
-                <h3 class="text-sm font-bold uppercase tracking-widest text-text-muted mb-2">Starring</h3>
-                <p class="text-white font-medium">
-                    {% for actor in media.cast[:5] %}{{ actor }}{% if not loop.last %}, {% endif %}{% endfor %}
+                <div class="flex flex-wrap gap-3 mb-6">
+                    {% for genre in media.genres %}
+                    <span class="px-3 py-1 bg-white border-2 border-black text-xs font-bold uppercase shadow-brutal-hover">
+                        {{ genre }}
+                    </span>
+                    {% endfor %}
+                </div>
+                
+                <h1 class="font-serif text-5xl md:text-7xl font-black mb-6 leading-none tracking-tight">{{ media.title }}</h1>
+                
+                <p class="text-xl md:text-2xl text-gray-600 leading-relaxed font-serif mb-8 max-w-4xl">
+                    {{ media.description }}
                 </p>
-            </div>
-            {% endif %}
 
-            <div class="bg-surface/50 rounded-2xl border border-white/5 overflow-hidden">
-                <div class="bg-surface px-6 py-4 border-b border-white/5 flex items-center gap-3">
-                    <i class="fa-solid fa-play text-primary"></i>
-                    <h3 class="font-bold text-lg uppercase tracking-wide">
-                        {% if media_type == 'movie' %}Available Sources{% else %}Season List{% endif %}
+                {% if media.cast %}
+                <div class="border-l-4 border-accent pl-6 py-2">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Starring</h3>
+                    <p class="font-bold text-lg leading-relaxed">
+                        {% for actor in media.cast[:5] %}{{ actor }}{% if not loop.last %}, {% endif %}{% endfor %}
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="bg-white border-3 border-black shadow-brutal-lg">
+                <div class="bg-black text-white px-6 py-4 flex items-center justify-between">
+                    <h3 class="font-bold text-xl font-serif italic">
+                        {% if media_type == 'movie' %}Digital Files{% else %}Series Index{% endif %}
                     </h3>
+                    <div class="w-3 h-3 bg-accent rounded-full animate-pulse"></div>
                 </div>
 
                 {% if media_type == 'movie' %}
-                    <div class="p-4 space-y-3">
+                    <div class="p-6 space-y-4">
                         {% if media.telegram %}
                             {% for file in media.telegram %}
-                            <div class="flex flex-col sm:flex-row items-center justify-between bg-black/40 p-4 rounded-xl border border-white/5 hover:border-primary/50 transition-colors group">
-                                <div class="flex items-center gap-4 w-full sm:w-auto overflow-hidden mb-3 sm:mb-0">
-                                    <div class="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center text-xs font-bold text-text-muted group-hover:text-white">
-                                        MKV
-                                    </div>
+                            <div class="flex flex-col md:flex-row items-center justify-between bg-background border-2 border-black p-4 gap-4 hover:shadow-brutal hover:-translate-y-1 transition-all duration-200">
+                                <div class="flex items-center gap-4 w-full md:w-auto overflow-hidden">
+                                    <div class="w-12 h-12 bg-white border-2 border-black flex items-center justify-center font-bold text-xs shrink-0">MKV</div>
                                     <div class="min-w-0">
                                         <div class="flex items-center gap-2 mb-1">
-                                            <span class="text-primary font-bold">{{ file.quality }}</span>
-                                            <span class="text-xs bg-white/10 px-1.5 py-0.5 rounded text-gray-400">{{ file.size }}</span>
+                                            <span class="bg-black text-white text-xs px-2 py-0.5 font-bold">{{ file.quality }}</span>
+                                            <span class="text-xs font-mono text-gray-500">{{ file.size }}</span>
                                         </div>
-                                        <p class="text-xs text-text-muted truncate max-w-[200px] font-mono">{{ file.name }}</p>
+                                        <p class="text-sm font-bold truncate max-w-[300px]">{{ file.name }}</p>
                                     </div>
                                 </div>
                                 
-                                <div class="flex gap-3 w-full sm:w-auto">
-                                    <a href="{{ base_url }}/dl/{{ file.id }}/video.mkv" class="flex-1 sm:flex-none bg-white text-black hover:bg-primary hover:text-white px-6 py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-primary/50">
-                                        <i class="fa-solid fa-play"></i> Play
+                                <div class="flex gap-3 w-full md:w-auto">
+                                    <a href="{{ base_url }}/dl/{{ file.id }}/video.mkv" class="flex-1 md:flex-none bg-accent text-black px-6 py-2 border-2 border-black font-bold uppercase text-xs tracking-wider hover:bg-black hover:text-white transition-all shadow-brutal-hover">
+                                        Play Now
                                     </a>
-                                    <a href="{{ base_url }}/dl/{{ file.id }}/video.mkv" download class="flex-1 sm:flex-none bg-white/5 hover:bg-white/20 text-white px-4 py-2.5 rounded-lg text-sm font-bold transition-all flex items-center justify-center">
+                                    <a href="{{ base_url }}/dl/{{ file.id }}/video.mkv" download class="w-10 flex items-center justify-center border-2 border-black hover:bg-gray-100 transition-all">
                                         <i class="fa-solid fa-download"></i>
                                     </a>
                                 </div>
                             </div>
                             {% endfor %}
                         {% else %}
-                            <p class="text-center py-8 text-text-muted">No files available.</p>
+                            <p class="text-center py-8 font-bold text-gray-400">No content indexed.</p>
                         {% endif %}
                     </div>
 
                 {% else %}
-                    <div class="divide-y divide-white/5" x-data>
+                    <div class="divide-y-2 divide-black" x-data>
                         {% for season in media.seasons|sort(attribute='season_number') %}
                         <div class="group">
-                            <button class="w-full flex items-center justify-between p-6 hover:bg-white/5 transition-colors text-left"
+                            <button class="w-full flex items-center justify-between p-6 hover:bg-accent transition-colors text-left"
                                     onclick="document.getElementById('season-{{ season.season_number }}').classList.toggle('hidden')">
-                                <span class="text-lg font-bold">Season {{ season.season_number }}</span>
-                                <i class="fa-solid fa-chevron-down text-text-muted group-hover:text-white"></i>
+                                <span class="text-xl font-bold font-serif">Season {{ season.season_number }}</span>
+                                <i class="fa-solid fa-plus border-2 border-black w-8 h-8 flex items-center justify-center bg-white group-hover:bg-black group-hover:text-white transition-all"></i>
                             </button>
                             
-                            <div id="season-{{ season.season_number }}" class="hidden bg-black/20 pb-4">
+                            <div id="season-{{ season.season_number }}" class="hidden bg-background border-t-2 border-black p-6 space-y-3">
                                 {% for episode in season.episodes|sort(attribute='episode_number') %}
-                                <div class="px-6 py-3 hover:bg-white/5 transition-colors flex flex-col md:flex-row gap-4 items-start md:items-center">
+                                <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between bg-white border-2 border-black/10 p-4 hover:border-black transition-all">
                                     
-                                    <div class="flex-1">
-                                        <div class="flex items-center gap-3">
-                                            <span class="text-primary font-bold text-sm">E{{ episode.episode_number }}</span>
-                                            <span class="font-medium text-white">{{ episode.title }}</span>
+                                    <div class="flex items-center gap-4">
+                                        <span class="font-mono text-2xl font-bold text-gray-300">#{{ episode.episode_number }}</span>
+                                        <div>
+                                            <h4 class="font-bold text-lg leading-tight">{{ episode.title }}</h4>
+                                            {% if episode.overview %}
+                                            <p class="text-xs text-gray-500 mt-1 line-clamp-1 max-w-md">{{ episode.overview }}</p>
+                                            {% endif %}
                                         </div>
                                     </div>
 
-                                    <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                                    <div class="flex flex-wrap gap-2">
                                         {% if episode.telegram %}
                                             {% for file in episode.telegram %}
-                                            <a href="{{ base_url }}/dl/{{ file.id }}/video.mkv" class="bg-surface border border-white/10 hover:border-primary px-4 py-2 rounded-lg text-xs font-bold text-gray-300 hover:text-white hover:bg-primary/10 transition-all flex items-center gap-2">
-                                                <i class="fa-solid fa-play text-xs"></i>
-                                                {{ file.quality }} <span class="opacity-50">({{ file.size }})</span>
+                                            <a href="{{ base_url }}/dl/{{ file.id }}/video.mkv" class="bg-white border-2 border-black px-4 py-2 text-xs font-bold uppercase tracking-wide hover:bg-black hover:text-white transition-all shadow-brutal-hover">
+                                                {{ file.quality }}
                                             </a>
                                             {% endfor %}
                                         {% else %}
-                                            <span class="text-xs text-red-500 font-bold px-3 py-1">Unavailable</span>
+                                            <span class="text-xs font-bold text-gray-400 border border-gray-200 px-3 py-1">Unavailable</span>
                                         {% endif %}
                                     </div>
                                 </div>
