@@ -3,86 +3,243 @@
 {% block title %}Edit Metadata{% endblock %}
 
 {% block content %}
-<div class="w-full max-w-5xl mx-auto px-4 md:px-8 py-8">
+<div class="w-full max-w-6xl mx-auto px-4 md:px-8 py-8 md:py-12">
     
-    <div class="mb-8 flex items-center justify-between">
+    <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <a href="/admin/media/manage?media_type={{ media_type }}" class="text-xs font-bold uppercase tracking-widest hover:underline mb-1 block"><i class="fa-solid fa-arrow-left mr-1"></i> Back</a>
-            <h1 class="font-serif text-3xl font-bold">Edit Metadata</h1>
+            <a href="/admin/media/manage?media_type={{ media_type }}" class="text-xs font-bold uppercase tracking-widest hover:underline mb-2 block text-gray-500">
+                <i class="fa-solid fa-arrow-left mr-1"></i> Return to Management
+            </a>
+            <h1 class="font-serif text-3xl md:text-4xl font-black">Edit {{ media_type|title }}</h1>
         </div>
-        <span class="font-mono text-xs bg-black text-white px-2 py-1 font-bold">ID: {{ tmdb_id }}</span>
+        <div class="flex items-center gap-3">
+            <span class="font-mono text-xs bg-black text-white px-3 py-1 font-bold border-2 border-black">TMDB: {{ tmdb_id }}</span>
+            <span class="font-mono text-xs bg-white text-black px-3 py-1 font-bold border-2 border-black">DB: {{ db_index }}</span>
+        </div>
     </div>
 
-    <form onsubmit="updateMedia(event)" class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-        <div class="md:col-span-1 space-y-4">
-            <div class="border-2 border-black p-1 bg-white shadow-brutal-sm">
-                <img src="{{ media_details.poster }}" class="w-full">
+    <form onsubmit="updateMedia(event)" class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12">
+        
+        <div class="lg:col-span-4 space-y-6">
+            <div class="bg-white p-2 border-2 border-black shadow-brutal">
+                <img src="{{ media_details.poster }}" class="w-full h-auto object-cover border border-black/10" alt="Current Poster">
             </div>
-            <div>
-                <label class="block text-[10px] font-bold uppercase mb-1">Poster URL</label>
-                <input type="text" name="poster" value="{{ media_details.poster }}" class="w-full border-2 border-black px-2 py-1 text-xs">
-            </div>
-            <div>
-                <label class="block text-[10px] font-bold uppercase mb-1">Backdrop URL</label>
-                <input type="text" name="backdrop" value="{{ media_details.backdrop }}" class="w-full border-2 border-black px-2 py-1 text-xs">
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase mb-1 tracking-widest">Poster URL</label>
+                    <input type="text" name="poster" value="{{ media_details.poster }}" class="w-full border-2 border-black px-3 py-2 text-xs font-mono focus:bg-accent transition-colors outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase mb-1 tracking-widest">Backdrop URL</label>
+                    <input type="text" name="backdrop" value="{{ media_details.backdrop }}" class="w-full border-2 border-black px-3 py-2 text-xs font-mono focus:bg-accent transition-colors outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase mb-1 tracking-widest">Logo URL</label>
+                    <input type="text" name="logo" value="{{ media_details.logo }}" class="w-full border-2 border-black px-3 py-2 text-xs font-mono focus:bg-accent transition-colors outline-none">
+                </div>
             </div>
         </div>
 
-        <div class="md:col-span-2 space-y-6 bg-white p-6 border-2 border-black shadow-brutal">
-            <div class="grid grid-cols-2 gap-4">
-                <div class="col-span-2">
-                    <label class="block text-[10px] font-bold uppercase mb-1">Title</label>
-                    <input type="text" name="title" value="{{ media_details.title }}" class="w-full border-2 border-black px-3 py-2 font-bold text-lg">
+        <div class="lg:col-span-8 bg-white border-2 border-black p-6 md:p-8 shadow-brutal-lg h-fit">
+            <h3 class="font-serif text-xl font-bold mb-6 border-b-2 border-black pb-2">General Information</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="md:col-span-2">
+                    <label class="block text-[10px] font-bold uppercase mb-1 tracking-widest">Title</label>
+                    <input type="text" name="title" value="{{ media_details.title }}" class="w-full border-2 border-black px-4 py-3 font-bold text-lg focus:shadow-brutal-sm transition-all outline-none">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold uppercase mb-1">Year</label>
-                    <input type="number" name="release_year" value="{{ media_details.release_year }}" class="w-full border-2 border-black px-3 py-2 font-bold">
+                    <label class="block text-[10px] font-bold uppercase mb-1 tracking-widest">Release Year</label>
+                    <input type="number" name="release_year" value="{{ media_details.release_year }}" class="w-full border-2 border-black px-4 py-2 font-bold outline-none focus:bg-accent">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold uppercase mb-1">Rating</label>
-                    <input type="number" step="0.1" name="rating" value="{{ media_details.rating }}" class="w-full border-2 border-black px-3 py-2 font-bold">
+                    <label class="block text-[10px] font-bold uppercase mb-1 tracking-widest">Rating (0-10)</label>
+                    <input type="number" step="0.1" name="rating" value="{{ media_details.rating }}" class="w-full border-2 border-black px-4 py-2 font-bold outline-none focus:bg-accent">
                 </div>
+                {% if media_type == 'movie' %}
+                <div>
+                    <label class="block text-[10px] font-bold uppercase mb-1 tracking-widest">Runtime (min)</label>
+                    <input type="text" name="runtime" value="{{ media_details.runtime }}" class="w-full border-2 border-black px-4 py-2 font-bold outline-none focus:bg-accent">
+                </div>
+                {% endif %}
             </div>
-            <div>
-                <label class="block text-[10px] font-bold uppercase mb-1">Overview</label>
-                <textarea name="description" rows="6" class="w-full border-2 border-black px-3 py-2 text-sm">{{ media_details.description }}</textarea>
+
+            <div class="mb-8">
+                <label class="block text-[10px] font-bold uppercase mb-1 tracking-widest">Overview</label>
+                <textarea name="description" rows="6" class="w-full border-2 border-black px-4 py-3 text-sm leading-relaxed outline-none focus:bg-gray-50">{{ media_details.description }}</textarea>
             </div>
-            <button type="submit" class="bg-black text-white font-bold px-6 py-3 w-full uppercase text-xs tracking-widest hover:bg-accent hover:text-black border-2 border-transparent hover:border-black transition-all">Save Changes</button>
+
+            <button type="submit" class="w-full bg-black text-white font-bold py-4 uppercase text-xs tracking-widest border-2 border-transparent hover:bg-white hover:text-black hover:border-black hover:shadow-brutal transition-all">
+                Save Metadata Changes
+            </button>
         </div>
     </form>
 
-    <div class="border-t-2 border-black pt-8">
-        <h2 class="font-serif text-xl font-bold mb-4">Linked Files</h2>
+
+    <div class="border-t-4 border-black pt-12">
+        <h2 class="font-serif text-3xl font-black mb-8 flex items-center gap-3">
+            <i class="fa-solid fa-layer-group"></i> Content Management
+        </h2>
         
         {% if media_type == 'movie' %}
-            <div class="space-y-2">
-                {% for file in media.telegram %}
-                <div class="flex justify-between items-center bg-white p-3 border border-black">
-                    <div class="flex items-center gap-2 overflow-hidden">
-                        <span class="bg-black text-white text-[10px] font-bold px-1">{{ file.quality }}</span>
-                        <span class="text-xs truncate max-w-xs">{{ file.name }}</span>
+            <div class="bg-white border-2 border-black shadow-brutal p-6">
+                <h3 class="font-bold text-lg mb-4 uppercase tracking-wide">Linked Files</h3>
+                
+                {% if media_details.telegram %}
+                    <div class="space-y-3">
+                        {% for file in media_details.telegram %}
+                        <div class="flex flex-col md:flex-row items-start md:items-center justify-between bg-gray-50 p-4 border border-black gap-4 hover:shadow-brutal-sm transition-all">
+                            
+                            <div class="flex-grow overflow-hidden w-full">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="bg-accent border border-black px-2 py-0.5 text-[10px] font-black uppercase">{{ file.quality }}</span>
+                                    <span class="font-mono text-xs text-gray-500">{{ file.size }}</span>
+                                </div>
+                                <div class="font-mono text-xs break-all text-gray-700 select-all">{{ file.name }}</div>
+                            </div>
+                            
+                            <button onclick="deleteMovieFile('{{ file.id }}')" class="flex-shrink-0 bg-white text-red-600 border-2 border-red-600 px-4 py-2 text-[10px] font-bold uppercase hover:bg-red-600 hover:text-white transition-colors w-full md:w-auto">
+                                <i class="fa-solid fa-trash mr-1"></i> Delete
+                            </button>
+                        </div>
+                        {% endfor %}
                     </div>
-                    <button type="button" onclick="deleteFile('{{ file.id }}')" class="text-[10px] font-bold text-red-600 hover:underline uppercase">Remove</button>
-                </div>
+                {% else %}
+                    <div class="p-6 text-center border-2 border-dashed border-gray-300 text-gray-400 font-bold">
+                        No files linked to this movie.
+                    </div>
+                {% endif %}
+            </div>
+
+        {% else %}
+            <div class="space-y-6">
+                {% for season in media_details.seasons|sort(attribute='season_number') %}
+                <details class="group bg-white border-2 border-black shadow-brutal open:shadow-none open:translate-x-[2px] open:translate-y-[2px] transition-all">
+                    
+                    <summary class="flex items-center justify-between p-5 cursor-pointer select-none bg-gray-50 hover:bg-accent transition-colors">
+                        <div class="flex items-center gap-4">
+                            <span class="font-serif text-2xl font-black">Season {{ season.season_number }}</span>
+                            <span class="text-xs font-bold bg-black text-white px-2 py-1 rounded-full">{{ season.episodes|length }} Eps</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button onclick="deleteSeason(event, {{ season.season_number }})" class="text-red-500 hover:text-red-700 font-bold text-[10px] uppercase underline">Delete Season</button>
+                            <div class="w-8 h-8 border-2 border-black bg-white flex items-center justify-center group-open:rotate-180 transition-transform">
+                                <i class="fa-solid fa-chevron-down text-sm"></i>
+                            </div>
+                        </div>
+                    </summary>
+
+                    <div class="border-t-2 border-black divide-y-2 divide-black bg-white">
+                        {% for episode in season.episodes|sort(attribute='episode_number') %}
+                        <div class="p-6">
+                            
+                            <div class="flex flex-col md:flex-row justify-between gap-6 mb-6">
+                                <div class="flex-grow">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="bg-black text-white text-xs px-2 py-1 font-bold">EP {{ episode.episode_number }}</span>
+                                        <input type="text" value="{{ episode.title }}" class="font-bold text-lg border-b border-gray-300 focus:border-black outline-none w-full bg-transparent" readonly title="Title editing coming soon">
+                                    </div>
+                                    <p class="text-xs text-gray-500 leading-relaxed max-w-3xl">{{ episode.overview }}</p>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <button onclick="deleteEpisode({{ season.season_number }}, {{ episode.episode_number }})" class="bg-red-50 text-red-600 border border-red-200 px-3 py-1 text-[10px] font-bold uppercase hover:bg-red-600 hover:text-white transition-colors">
+                                        Delete Episode
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="pl-0 md:pl-4 border-l-0 md:border-l-4 border-gray-100 space-y-2">
+                                {% if episode.telegram %}
+                                    {% for file in episode.telegram %}
+                                    <div class="flex flex-wrap items-center justify-between bg-gray-50 border border-black p-2 gap-3">
+                                        <div class="flex items-center gap-2 overflow-hidden">
+                                            <span class="bg-accent border border-black px-1.5 py-0.5 text-[10px] font-black uppercase">{{ file.quality }}</span>
+                                            <span class="font-mono text-[10px] text-gray-600 truncate max-w-[200px] sm:max-w-md">{{ file.name }}</span>
+                                        </div>
+                                        <button onclick="deleteTvFile({{ season.season_number }}, {{ episode.episode_number }}, '{{ file.id }}')" class="text-red-600 hover:text-red-900 text-[10px] font-bold uppercase">
+                                            <i class="fa-solid fa-xmark"></i> Remove
+                                        </button>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="text-[10px] text-gray-400 font-bold italic">No files linked.</div>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                        {% endfor %}
+                    </div>
+                </details>
                 {% endfor %}
             </div>
-        {% else %}
-            <p class="text-xs text-gray-500">Episode file management is available via direct API or re-indexing.</p>
         {% endif %}
     </div>
+
 </div>
 
 <script>
+    const TMDB_ID = {{ tmdb_id }};
+    const DB_INDEX = {{ db_index }};
+    const MEDIA_TYPE = '{{ media_type }}';
+
+    // 1. Update Metadata
     async function updateMedia(e) {
         e.preventDefault();
+        const btn = e.target.querySelector('button[type="submit"]');
+        const originalText = btn.innerText;
+        btn.innerText = "Saving...";
+        btn.disabled = true;
+
         const data = Object.fromEntries(new FormData(e.target));
-        await fetch(`/api/media/update?tmdb_id={{ tmdb_id }}&db_index={{ db_index }}&media_type={{ media_type }}`, {
-            method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)
-        });
-        alert('Saved'); location.reload();
+        
+        try {
+            const res = await fetch(`/api/media/update?tmdb_id=${TMDB_ID}&db_index=${DB_INDEX}&media_type=${MEDIA_TYPE}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            if(res.ok) {
+                location.reload();
+            } else {
+                alert("Error updating metadata.");
+            }
+        } catch(err) {
+            console.error(err);
+            alert("Connection error.");
+        } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
     }
-    async function deleteFile(id) {
-        if(confirm('Remove file?')) { await fetch(`/api/media/delete-quality?tmdb_id={{ tmdb_id }}&db_index={{ db_index }}&id=${id}`, { method: 'DELETE' }); location.reload(); }
+
+    // 2. Delete Movie File
+    async function deleteMovieFile(fileId) {
+        if(!confirm('Are you sure you want to remove this file link?')) return;
+        await fetch(`/api/media/delete-quality?tmdb_id=${TMDB_ID}&db_index=${DB_INDEX}&id=${fileId}`, { method: 'DELETE' });
+        location.reload();
+    }
+
+    // 3. Delete TV File
+    async function deleteTvFile(season, episode, fileId) {
+        if(!confirm('Remove this file link from S' + season + ' E' + episode + '?')) return;
+        await fetch(`/api/media/delete-tv-quality?tmdb_id=${TMDB_ID}&db_index=${DB_INDEX}&season=${season}&episode=${episode}&id=${fileId}`, { method: 'DELETE' });
+        location.reload();
+    }
+
+    // 4. Delete Entire Episode
+    async function deleteEpisode(season, episode) {
+        if(!confirm('DELETE Episode ' + episode + ' (Season ' + season + ')? This removes all links inside it.')) return;
+        await fetch(`/api/media/delete-tv-episode?tmdb_id=${TMDB_ID}&db_index=${DB_INDEX}&season=${season}&episode=${episode}`, { method: 'DELETE' });
+        location.reload();
+    }
+
+    // 5. Delete Entire Season
+    async function deleteSeason(e, season) {
+        e.preventDefault(); // Stop details from toggling
+        if(!confirm('WARNING: DELETE ENTIRE SEASON ' + season + '?\nThis action cannot be undone.')) return;
+        await fetch(`/api/media/delete-tv-season?tmdb_id=${TMDB_ID}&db_index=${DB_INDEX}&season=${season}`, { method: 'DELETE' });
+        location.reload();
     }
 </script>
 {% endblock %}
