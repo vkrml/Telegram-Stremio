@@ -1,28 +1,25 @@
 {% extends "base.html" %}
 {% block title %}System Status{% endblock %}
 {% block content %}
-<div class="min-h-screen flex items-center justify-center p-6">
-    <div class="w-full max-w-md bg-surface p-10 rounded-2xl border border-white/5 text-center shadow-2xl">
-        <div class="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 relative">
-            <div class="absolute inset-0 bg-green-500/20 rounded-full animate-ping"></div>
-            <i class="fa-solid fa-check text-green-500 text-3xl relative z-10"></i>
+<div class="flex-grow flex items-center justify-center p-6">
+    <div class="w-full max-w-sm bg-white p-8 border-2 border-black text-center shadow-brutal">
+        <div class="w-16 h-16 bg-accent border-2 border-black rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fa-solid fa-check text-green-600 text-2xl"></i>
         </div>
-        <h1 class="text-3xl font-black text-white mb-2">OPERATIONAL</h1>
-        <p class="text-text-muted mb-10 text-sm">All systems functioning normally.</p>
+        <h1 class="font-serif text-2xl font-bold mb-1">Operational</h1>
+        <p class="text-xs font-bold uppercase text-gray-400 mb-8">All Systems Nominal</p>
         
-        <div class="grid grid-cols-2 gap-4 text-left">
-            <div class="bg-black/30 p-4 rounded border border-white/5">
-                <p class="text-xs text-text-muted uppercase font-bold tracking-wider">Movies</p>
-                <p class="text-2xl font-bold text-white">{{ stats.total_content }}</p>
+        <div class="grid grid-cols-2 gap-4 text-left mb-8">
+            <div class="bg-gray-50 p-3 border border-black">
+                <p class="text-[10px] font-bold uppercase text-gray-500">Items</p>
+                <p class="text-xl font-black">{{ stats.total_content }}</p>
             </div>
-            <div class="bg-black/30 p-4 rounded border border-white/5">
-                <p class="text-xs text-text-muted uppercase font-bold tracking-wider">Nodes</p>
-                <p class="text-2xl font-bold text-white">{{ stats.databases_online }}</p>
+            <div class="bg-gray-50 p-3 border border-black">
+                <p class="text-[10px] font-bold uppercase text-gray-500">Nodes</p>
+                <p class="text-xl font-black">{{ stats.databases_online }}</p>
             </div>
         </div>
-        <div class="mt-10">
-            <a href="/" class="text-sm font-bold text-text-muted hover:text-white uppercase tracking-widest transition-colors">Return to Home</a>
-        </div>
+        <a href="/" class="block w-full bg-black text-white py-3 font-bold text-xs uppercase hover:bg-white hover:text-black border-2 border-transparent hover:border-black transition-all">Return Home</a>
     </div>
 </div>
 {% endblock %}
